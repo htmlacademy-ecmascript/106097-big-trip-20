@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Николай Стебунов](https://up.htmlacademy.ru/ecmascript/20/user/106097).
-* Наставник: `Неизвестно`.
+* Наставник: [Денис Лопатин](https://htmlacademy.ru/profile/denislopatin).
 
 ---
 
