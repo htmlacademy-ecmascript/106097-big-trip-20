@@ -1,3 +1,5 @@
+import { getRandomArrayElement } from '../utils';
+
 const mockEvents = [
   {
     type: 'Taxi',
@@ -6,7 +8,7 @@ const mockEvents = [
     end: new Date('2023-07-14 12:30'),
     cost: 100,
     favourite: false,
-    offers: [1]
+    offers: ['Подача ко времени']
   },
   {
     type: 'Bus',
@@ -15,7 +17,7 @@ const mockEvents = [
     end: new Date('2023-07-19 19:00'),
     cost: 20,
     favourite: false,
-    offers: [1, 2]
+    offers: ['Выбрать место']
   },
   {
     type: 'Train',
@@ -24,7 +26,7 @@ const mockEvents = [
     end: new Date('2023-07-21 01:30'),
     cost: 40,
     favourite: false,
-    offers: [1, 3]
+    offers: ['Добавить багаж', 'Выбрать место', 'Ужин']
   },
   {
     type: 'Ship',
@@ -33,7 +35,7 @@ const mockEvents = [
     end: new Date('2023-07-21 10:30'),
     cost: 80,
     favourite: false,
-    offers: [2, 3]
+    offers: ['Комфорт класс']
   },
   {
     type: 'Drive',
@@ -42,7 +44,7 @@ const mockEvents = [
     end: new Date('2023-07-25 15:00'),
     cost: 90,
     favourite: false,
-    offers: [1, 4]
+    offers: ['Комфорт класс']
   },
   {
     type: 'Flight',
@@ -51,7 +53,7 @@ const mockEvents = [
     end: new Date('2023-07-26 08:30'),
     cost: 300,
     favourite: false,
-    offers: [1, 2, 3]
+    offers: ['Возвратный билет', 'Добавить багаж', 'Выбрать место', 'Ужин']
   },
   {
     type: 'Check-in',
@@ -60,7 +62,7 @@ const mockEvents = [
     end: new Date('2023-07-26 14:00'),
     cost: 0,
     favourite: false,
-    offers: [2, 4]
+    offers: ['Раннее заселение']
   },
   {
     type: 'Sightseeing',
@@ -69,7 +71,7 @@ const mockEvents = [
     end: new Date('2023-07-27 11:30'),
     cost: 0,
     favourite: true,
-    offers: [3, 4]
+    offers: ['Билет без очереди', 'Гид']
   },
   {
     type: 'Restaurant',
@@ -78,6 +80,10 @@ const mockEvents = [
     end: new Date('2023-07-27 20:00'),
     cost: 25,
     favourite: true,
-    offers: [2, 3, 4]
+    offers: ['Столик у окна']
   }
 ];
+
+const getRandomEvent = () => getRandomArrayElement(mockEvents);
+
+export {getRandomEvent};
