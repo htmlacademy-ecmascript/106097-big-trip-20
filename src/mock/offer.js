@@ -1,51 +1,51 @@
 const offers = [
   {
-    type: ['Flight'],
+    type: ['flight'],
     name: 'Возвратный билет',
     price: 10,
   },
   {
-    type: ['Train', 'Flight'],
+    type: ['train', 'flight'],
     name: 'Добавить багаж',
     price: 20,
   },
   {
-    type: ['Bus', 'Train', 'Flight'],
+    type: ['bus', 'train', 'flight'],
     name: 'Выбрать место',
     price: 5,
   },
   {
-    type: ['Train', 'Flight'],
+    type: ['train', 'flight'],
     name: 'Ужин',
     price: 15,
   },
   {
-    type: ['Taxi'],
+    type: ['taxi'],
     name: 'Подача ко времени',
     price: 5,
   },
   {
-    type: ['Drive', 'Ship'],
+    type: ['drive', 'ship'],
     name: 'Комфорт класс',
     price: 20,
   },
   {
-    type: ['Check-in'],
+    type: ['check-in'],
     name: 'Раннее заселение',
     price: 10,
   },
   {
-    type: ['Sightseeing'],
+    type: ['sightseeing'],
     name: 'Билет без очереди',
     price: 5,
   },
   {
-    type: ['Sightseeing'],
+    type: ['sightseeing'],
     name: 'Гид',
     price: 15,
   },
   {
-    type: ['Restaurant'],
+    type: ['restaurant'],
     name: 'Столик у окна',
     price: 5,
   }
