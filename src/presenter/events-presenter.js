@@ -20,6 +20,7 @@ export default class EventsPresenter {
     render(this.listComponent, this.boardContainer);
     render(new FormEditView(), this.listComponent.getElement());
     render(new SortView(), this.boardContainer, RenderPosition.AFTERBEGIN);
+
     for (let i = 0; i < this.boardEvents.length; i++) {
       render(new TripEventView({event: this.boardEvents[i]}), this.listComponent.getElement());
     }
