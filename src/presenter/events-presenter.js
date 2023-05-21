@@ -4,8 +4,10 @@ import SortView from '../view/sort';
 import FormEditView from '../view/form-edit';
 import TripEventView from '../view/trip-event';
 
+const listTemplate = '<ul class="trip-events__list"></ul>';
+
 export default class EventsPresenter {
-  listComponent = new ListView();
+  listComponent = new ListView({list: listTemplate});
 
   constructor ({ boardContainer, eventsModel }) {
     this.boardContainer = boardContainer;
@@ -18,6 +20,7 @@ export default class EventsPresenter {
     render(this.listComponent, this.boardContainer);
     render(new FormEditView(), this.listComponent.getElement());
     render(new SortView(), this.boardContainer, RenderPosition.AFTERBEGIN);
+    console.log(this.boardEvents);
     for (let i = 0; i < this.boardEvents.length; i++) {
       render(new TripEventView({event: this.boardEvents[i]}), this.listComponent.getElement());
     }

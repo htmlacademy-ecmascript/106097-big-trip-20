@@ -11,6 +11,6 @@ render(new FilterView(), filtersElement, RenderPosition.AFTERBEGIN);
 const eventModel = new EventModel();
 const eventsPresenter = new EventsPresenter({
   boardContainer: tripEventsElement,
-  eventModel,
+  eventsModel: eventModel,
 });
 eventsPresenter.init();
