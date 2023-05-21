@@ -20,7 +20,7 @@ const getDuration = (start, end) => {
   }
 
   if (hours !== 0) {
-    return `${hours}H${minutes}M`
+    return `${hours}H${minutes}M`;
   }
 
   return `${minutes}M`;
