@@ -3,7 +3,7 @@ import { getRandomArrayElement } from '../utils';
 const mockEvents = [
   {
     type: 'taxi',
-    destination: 'Valencia',
+    destinationId: 1,
     start: new Date('2023-07-14T12:00'),
     end: new Date('2023-07-14T12:30'),
     cost: 100,
@@ -17,7 +17,7 @@ const mockEvents = [
   },
   {
     type: 'bus',
-    destination: 'Lisbon',
+    destinationId: 2,
     start: new Date('2023-07-19T13:00'),
     end: new Date('2023-07-19T19:00'),
     cost: 20,
@@ -31,7 +31,7 @@ const mockEvents = [
   },
   {
     type: 'train',
-    destination: 'Moscow',
+    destinationId: 3,
     start: new Date('2023-07-20T08:00'),
     end: new Date('2023-07-21T01:30'),
     cost: 40,
@@ -53,7 +53,7 @@ const mockEvents = [
   },
   {
     type: 'ship',
-    destination: 'Munich',
+    destinationId: 4,
     start: new Date('2023-07-21 09:00'),
     end: new Date('2023-07-21 10:30'),
     cost: 80,
@@ -67,7 +67,7 @@ const mockEvents = [
   },
   {
     type: 'drive',
-    destination: 'Minsk',
+    destinationId: 5,
     start: new Date('2023-07-25T06:00'),
     end: new Date('2023-07-25T15:00'),
     cost: 90,
@@ -81,7 +81,7 @@ const mockEvents = [
   },
   {
     type: 'flight',
-    destination: 'Vilnus',
+    destinationId: 6,
     start: new Date('2023-07-26T05:00'),
     end: new Date('2023-07-26T08:30'),
     cost: 300,
@@ -107,7 +107,7 @@ const mockEvents = [
   },
   {
     type: 'check-in',
-    destination: 'Saint-Petersburg',
+    destinationId: 7,
     start: new Date('2023-07-26T12:00'),
     end: new Date('2023-07-26T14:00'),
     cost: 0,
@@ -121,7 +121,7 @@ const mockEvents = [
   },
   {
     type: 'sightseeing',
-    destination: 'Warsaw',
+    destinationId: 8,
     start: new Date('2023-07-27T10:00'),
     end: new Date('2023-07-27T11:30'),
     cost: 0,
@@ -139,7 +139,7 @@ const mockEvents = [
   },
   {
     type: 'restaurant',
-    destination: 'San-Francisco',
+    destinationId: 9,
     start: new Date('2023-07-27T19:00'),
     end: new Date('2023-07-27T20:00'),
     cost: 25,
