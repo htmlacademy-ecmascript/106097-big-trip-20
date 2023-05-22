@@ -9,10 +9,11 @@ const listTemplate = '<ul class="trip-events__list"></ul>';
 export default class EventsPresenter {
   listComponent = new ListView({list: listTemplate});
 
-  constructor ({ boardContainer, eventsModel, destinationsModel }) {
+  constructor ({ boardContainer, eventsModel, destinationsModel, offersModel }) {
     this.boardContainer = boardContainer;
     this.eventsModel = eventsModel;
     this.destinationsModel = destinationsModel;
+    this.offersModel = offersModel;
   }
 
   init () {
@@ -23,7 +24,7 @@ export default class EventsPresenter {
     render(new SortView(), this.boardContainer, RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < this.boardEvents.length; i++) {
-      render(new TripEventView({event: this.boardEvents[i], destinations: this.destinationsModel}), this.listComponent.getElement());
+      render(new TripEventView({event: this.boardEvents[i], destinations: this.destinationsModel, offers: this.offersModel}), this.listComponent.getElement());
     }
   }
 }

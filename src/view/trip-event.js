@@ -14,15 +14,15 @@ const createOffers = (offers) => {
   return code;
 };
 
-function createTripEventTemplate (event, destinations) {
-  const {start, end, type, cost, destinationId, offers, favourite} = event;
+function createTripEventTemplate (event, destinations, offers) {
+  const {start, end, type, cost, destinationId, favourite} = event;
 
   const dateForTag = formatDataForTag(start);
   const dateForHuman = formatDataForHuman(start);
   const timeStart = formatTime(start);
   const timeEnd = formatTime(end);
   const duration = getDuration(start, end);
-  const offersTemplate = createOffers(offers);
+  const offersTemplate = createOffers(offers.getByType(type));
   const destination = destinations.getById(destinationId);
 
   return `<li class="trip-events__item">
@@ -61,13 +61,14 @@ function createTripEventTemplate (event, destinations) {
 }
 
 export default class TripEventView {
-  constructor({event, destinations}) {
+  constructor({event, destinations, offers}) {
     this.event = event;
     this.destinations = destinations;
+    this.offers = offers;
   }
 
   getTemplate () {
-    return createTripEventTemplate(this.event, this.destinations);
+    return createTripEventTemplate(this.event, this.destinations, this.offers);
   }
 
   getElement () {
