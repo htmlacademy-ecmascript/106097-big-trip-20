@@ -50,3 +50,5 @@ const offers = [
     price: 5,
   }
 ];
+
+export { offers };
