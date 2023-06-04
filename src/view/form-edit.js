@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
 import { TYPES } from '../const.js';
 import { capitalizeFirstLetter } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view';
 
 const createEventTypes = () => {
   let code = '';
@@ -130,20 +130,8 @@ function createFormEditTemplate () {
 </li>`;
 }
 
-export default class FormEditView {
-  getTemplate () {
+export default class FormEditView extends AbstractView {
+  get template () {
     return createFormEditTemplate();
-  }
-
-  getElement () {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement () {
-    this.element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 import { formatDataForTag, formatDataForHuman, formatTime, getDuration } from '../utils.js';
 
 const createOffers = (offers) => {
@@ -60,26 +60,15 @@ function createTripEventTemplate (event, destinations, offers) {
 </li>`;
 }
 
-export default class TripEventView {
-  constructor({event, destinations, offers}) {
+export default class TripEventView extends AbstractView {
+  constructor ({event, destinations, offers}) {
+    super();
     this.event = event;
     this.destinations = destinations;
     this.offers = offers;
   }
 
-  getTemplate () {
+  get template () {
     return createTripEventTemplate(this.event, this.destinations, this.offers);
-  }
-
-  getElement () {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement () {
-    this.element = null;
   }
 }

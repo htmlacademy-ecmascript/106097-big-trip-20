@@ -1,23 +1,12 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
-export default class ListView {
-  constructor({list}) {
+export default class ListView extends AbstractView {
+  constructor ({list}) {
+    super ();
     this.list = list;
   }
 
-  getTemplate () {
+  get template () {
     return this.list;
-  }
-
-  getElement () {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement () {
-    this.element = null;
   }
 }

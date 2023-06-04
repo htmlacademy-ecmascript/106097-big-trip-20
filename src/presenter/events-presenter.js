@@ -1,4 +1,4 @@
-import { RenderPosition, render } from '../render';
+import { RenderPosition, render } from '../framework/render';
 import ListView from '../view/list';
 import SortView from '../view/sort';
 import FormEditView from '../view/form-edit';
@@ -20,11 +20,11 @@ export default class EventsPresenter {
     this.boardEvents = [...this.eventsModel.getEvents()];
 
     render(this.listComponent, this.boardContainer);
-    render(new FormEditView(), this.listComponent.getElement());
+    render(new FormEditView(), this.listComponent.element);
     render(new SortView(), this.boardContainer, RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < this.boardEvents.length; i++) {
-      render(new TripEventView({event: this.boardEvents[i], destinations: this.destinationsModel, offers: this.offersModel}), this.listComponent.getElement());
+      render(new TripEventView({event: this.boardEvents[i], destinations: this.destinationsModel, offers: this.offersModel}), this.listComponent.element);
     }
   }
 }
