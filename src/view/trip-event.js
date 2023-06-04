@@ -61,14 +61,18 @@ function createTripEventTemplate (event, destinations, offers) {
 }
 
 export default class TripEventView extends AbstractView {
+  #event = null;
+  #destinations = null;
+  #offers = null;
+
   constructor ({event, destinations, offers}) {
     super();
-    this.event = event;
-    this.destinations = destinations;
-    this.offers = offers;
+    this.#event = event;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   get template () {
-    return createTripEventTemplate(this.event, this.destinations, this.offers);
+    return createTripEventTemplate(this.#event, this.#destinations, this.#offers);
   }
 }
