@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { formatDataForTag, formatDataForHuman, formatTime, getDuration } from '../utils.js';
 
+
 const createOffers = (offers) => {
   let code = '';
   for (const offer of offers) {
@@ -64,15 +65,25 @@ export default class TripEventView extends AbstractView {
   #event = null;
   #destinations = null;
   #offers = null;
+  #handleEditEvent = null;
 
-  constructor ({event, destinations, offers}) {
+  constructor ({event, destinations, offers, onEditClick}) {
     super();
     this.#event = event;
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#handleEditEvent = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
   get template () {
     return createTripEventTemplate(this.#event, this.#destinations, this.#offers);
   }
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditEvent();
+  };
 }

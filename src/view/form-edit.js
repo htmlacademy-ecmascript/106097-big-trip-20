@@ -131,7 +131,24 @@ function createFormEditTemplate () {
 }
 
 export default class FormEditView extends AbstractView {
+  #event = null;
+  #handleFormSubmit = null;
+
+  constructor({event, onFormSubmit}) {
+    super();
+    this.#event = event;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+  }
+
   get template () {
     return createFormEditTemplate();
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }
