@@ -133,14 +133,19 @@ function createFormEditTemplate () {
 export default class FormEditView extends AbstractView {
   #event = null;
   #handleFormSubmit = null;
+  #handleCloseClick = null;
 
-  constructor({event, onFormSubmit}) {
+  constructor({event, onFormSubmit, onCloseClick}) {
     super();
     this.#event = event;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleCloseClick = onCloseClick;
 
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#closeClickHandler);
   }
 
   get template () {
@@ -150,5 +155,10 @@ export default class FormEditView extends AbstractView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();
+  };
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
   };
 }

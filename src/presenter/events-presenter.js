@@ -62,8 +62,10 @@ export default class EventsPresenter {
     const eventEditComponent = new FormEditView({
       event,
       onFormSubmit: () => {
-        replaceFormToEvent();
-        document.removeEventListener('keydown', escKeyDownHandler);
+        closeEventEditForm();
+      },
+      onCloseClick: () => {
+        closeEventEditForm();
       }
     });
 
@@ -73,6 +75,11 @@ export default class EventsPresenter {
 
     function replaceFormToEvent() {
       replace(eventComponent, eventEditComponent);
+    }
+
+    function closeEventEditForm() {
+      replaceFormToEvent();
+      document.removeEventListener('keydown', escKeyDownHandler);
     }
 
     render(eventComponent, this.#listComponent.element);
