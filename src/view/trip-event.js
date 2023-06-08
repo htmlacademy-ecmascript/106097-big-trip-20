@@ -1,5 +1,6 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 import { formatDataForTag, formatDataForHuman, formatTime, getDuration } from '../utils.js';
+
 
 const createOffers = (offers) => {
   let code = '';
@@ -14,15 +15,16 @@ const createOffers = (offers) => {
   return code;
 };
 
-function createTripEventTemplate (event) {
-  const {start, end, type, cost, destination, offers, favourite} = event;
+function createTripEventTemplate (event, destinations, offers) {
+  const {start, end, type, cost, destinationId, favourite} = event;
 
   const dateForTag = formatDataForTag(start);
   const dateForHuman = formatDataForHuman(start);
   const timeStart = formatTime(start);
   const timeEnd = formatTime(end);
   const duration = getDuration(start, end);
-  const offersTemplate = createOffers(offers);
+  const offersTemplate = createOffers(offers.getByType(type));
+  const destination = destinations.getById(destinationId);
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -30,7 +32,7 @@ function createTripEventTemplate (event) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${destination}</h3>
+    <h3 class="event__title">${type} ${destination.town}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${start}">${timeStart}</time>
@@ -59,24 +61,29 @@ function createTripEventTemplate (event) {
 </li>`;
 }
 
-export default class TripEventView {
-  constructor({event}) {
-    this.event = event;
+export default class TripEventView extends AbstractView {
+  #event = null;
+  #destinations = null;
+  #offers = null;
+  #handleEditEvent = null;
+
+  constructor ({event, destinations, offers, onEditClick}) {
+    super();
+    this.#event = event;
+    this.#destinations = destinations;
+    this.#offers = offers;
+    this.#handleEditEvent = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate () {
-    return createTripEventTemplate(this.event);
+  get template () {
+    return createTripEventTemplate(this.#event, this.#destinations, this.#offers);
   }
 
-  getElement () {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement () {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditEvent();
+  };
 }
