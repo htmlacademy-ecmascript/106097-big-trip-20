@@ -11,4 +11,11 @@ const EVENT_EMPTY = {
   offers: []
 };
 
-export { EVENT_EMPTY, TYPES };
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+export { EVENT_EMPTY, TYPES, FilterType };
