@@ -24,11 +24,15 @@ export default class EventsPresenter {
   }
 
   init () {
-    this.#renderBoard();
+    this.#renderEvents();
+    this.#renderSort();
+  }
+
+  #renderSort() {
     render(new SortView(), this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 
-  #renderBoard() {
+  #renderEvents() {
     this.#boardEvents = [...this.#eventsModel.events];
     render(this.#listComponent, this.#boardContainer);
 
