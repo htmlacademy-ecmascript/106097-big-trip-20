@@ -92,10 +92,6 @@ const mockEvents = [
         price: '10'
       },
       {
-        name: 'Добавить багаж',
-        price: '20'
-      },
-      {
         name: 'Выбрать место',
         price: '5'
       },
@@ -139,7 +135,7 @@ const mockEvents = [
   },
   {
     type: 'restaurant',
-    destinationId: 9,
+    destinationId: 8,
     start: new Date('2023-07-27T19:00'),
     end: new Date('2023-07-27T20:00'),
     cost: 25,
