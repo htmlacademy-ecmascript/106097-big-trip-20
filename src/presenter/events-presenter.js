@@ -60,13 +60,15 @@ export default class EventsPresenter {
       }
     });
     const eventEditComponent = new FormEditView({
-      event,
+      event: tripEvent,
       onFormSubmit: () => {
         closeEventEditForm();
       },
       onCloseClick: () => {
         closeEventEditForm();
-      }
+      },
+      offers: this.#offersModel,
+      destinations: this.#destinationsModel,
     });
 
     function replaceEventToForm() {

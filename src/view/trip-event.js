@@ -11,11 +11,10 @@ const createOffers = (offers) => {
     <span class="event__offer-price">${offer.price}</span>
   </li>`;
   }
-
   return code;
 };
 
-function createTripEventTemplate (event, destinations, offers) {
+function createTripEventTemplate (event, destinations) {
   const {start, end, type, cost, destinationId, favourite} = event;
 
   const dateForTag = formatDataForTag(start);
@@ -23,7 +22,7 @@ function createTripEventTemplate (event, destinations, offers) {
   const timeStart = formatTime(start);
   const timeEnd = formatTime(end);
   const duration = getDuration(start, end);
-  const offersTemplate = createOffers(offers.getByType(type));
+  const offersTemplate = createOffers(event.offers);
   const destination = destinations.getById(destinationId);
 
   return `<li class="trip-events__item">
@@ -64,14 +63,12 @@ function createTripEventTemplate (event, destinations, offers) {
 export default class TripEventView extends AbstractView {
   #event = null;
   #destinations = null;
-  #offers = null;
   #handleEditEvent = null;
 
-  constructor ({event, destinations, offers, onEditClick}) {
+  constructor ({event, destinations, onEditClick}) {
     super();
     this.#event = event;
     this.#destinations = destinations;
-    this.#offers = offers;
     this.#handleEditEvent = onEditClick;
 
     this.element.querySelector('.event__rollup-btn')
@@ -79,7 +76,7 @@ export default class TripEventView extends AbstractView {
   }
 
   get template () {
-    return createTripEventTemplate(this.#event, this.#destinations, this.#offers);
+    return createTripEventTemplate(this.#event, this.#destinations);
   }
 
   #editClickHandler = (evt) => {
