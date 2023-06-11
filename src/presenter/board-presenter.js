@@ -36,17 +36,19 @@ export default class BoardPresenter {
       return;
     }
 
-    for (let i = 0; i < this.#boardEvents.length; i++) {
-      this.#renderTripEvent(this.#boardEvents[i]);
-    }
+    this.#renderEvents();
   }
 
-  #renderTripEvent(tripEvent) {
+  #renderEvents() {
+    this.#boardEvents.forEach((event) => this.#renderEvent(event));
+  }
+
+  #renderEvent(event) {
     const eventPresenter = new EventPresenter({
       eventListContainer: this.#listComponent,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel
     });
-    eventPresenter.init(tripEvent);
+    eventPresenter.init(event);
   }
 }
