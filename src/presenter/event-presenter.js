@@ -1,4 +1,4 @@
-import { render, replace } from '../framework/render';
+import { render, replace, remove } from '../framework/render';
 import TripEventView from '../view/trip-event';
 import FormEditView from '../view/form-edit';
 
@@ -22,6 +22,9 @@ export default class EventPresenter {
   init(event) {
     this.#event = event;
 
+    const prevEventComponent = this.#eventComponent;
+    const prevEventEditComponent = this.#eventEditComponent;
+
     this.#eventComponent = new TripEventView({
       event: this.#event,
       destinations: this.#destinationsModel,
@@ -38,7 +41,27 @@ export default class EventPresenter {
       offers: this.#offersModel,
       destinations: this.#destinationsModel,
     });
-    render(this.#eventComponent, this.#eventListContainer.element);
+
+    if (prevEventComponent === null || prevEventEditComponent === null) {
+      render(this.#eventComponent, this.#eventListContainer.element);
+      return;
+    }
+
+    if (this.#eventListContainer.contains(prevEventComponent.element)) {
+      replace(this.#eventComponent, prevEventComponent);
+    }
+
+    if (this.#eventListContainer.contains(prevEventEditComponent.element)) {
+      replace(this.#eventEditComponent, prevEventEditComponent);
+    }
+
+    remove(prevEventComponent);
+    remove(prevEventEditComponent);
+  }
+
+  destroy() {
+    remove(this.#eventComponent);
+    remove(this.#eventEditComponent);
   }
 
   #escKeyDownHandler = (evt) => {
