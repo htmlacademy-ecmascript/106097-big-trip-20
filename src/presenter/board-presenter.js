@@ -3,6 +3,7 @@ import ListView from '../view/list';
 import SortView from '../view/sort';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
+import { updateItem } from '../utils/utils';
 
 const listTemplate = '<ul class="trip-events__list"></ul>';
 
@@ -12,6 +13,7 @@ export default class BoardPresenter {
   #destinationsModel = null;
   #offersModel = null;
   #boardEvents = [];
+  #eventPresenters = new Map();
 
   #listComponent = new ListView({list: listTemplate});
 
@@ -43,12 +45,24 @@ export default class BoardPresenter {
     this.#boardEvents.forEach((event) => this.#renderEvent(event));
   }
 
+  #clearEventsList() {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
+  #handleEventChange = (updatedEvent) => {
+    this.#boardEvents = updateItem(this.#boardEvents, updatedEvent);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+  };
+
   #renderEvent(event) {
     const eventPresenter = new EventPresenter({
       eventListContainer: this.#listComponent,
       destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel
+      offersModel: this.#offersModel,
+      onDataChange: this.#handleEventChange,
     });
     eventPresenter.init(event);
+    this.#eventPresenters.set(event.id, eventPresenter);
   }
 }

@@ -1,5 +1,5 @@
 import { TYPES } from '../const.js';
-import { capitalizeFirstLetter } from '../utils.js';
+import { capitalizeFirstLetter } from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
 
@@ -140,7 +140,7 @@ export default class FormEditView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this.#event);
   };
 
   #closeClickHandler = (evt) => {

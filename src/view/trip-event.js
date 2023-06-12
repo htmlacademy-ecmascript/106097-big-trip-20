@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import { formatDataForTag, formatDataForHuman, formatTime, getDuration } from '../utils.js';
+import { formatDataForTag, formatDataForHuman, formatTime, getDuration } from '../utils/utils.js';
 
 
 const createOffers = (offers) => {
@@ -15,7 +15,7 @@ const createOffers = (offers) => {
 };
 
 function createTripEventTemplate (event, destinations) {
-  const {start, end, type, cost, destinationId, favourite} = event;
+  const {start, end, type, cost, destinationId, isFavorite} = event;
 
   const dateForTag = formatDataForTag(start);
   const dateForHuman = formatDataForHuman(start);
@@ -47,7 +47,7 @@ function createTripEventTemplate (event, destinations) {
     <ul class="event__selected-offers">
       ${offersTemplate}
     </ul>
-    <button class="event__favorite-btn ${favourite === true ? 'event__favorite-btn--active' : ''}" type="button">
+    <button class="event__favorite-btn ${isFavorite === true ? 'event__favorite-btn--active' : ''}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
         <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -64,15 +64,19 @@ export default class TripEventView extends AbstractView {
   #event = null;
   #destinations = null;
   #handleEditEvent = null;
+  #handleFavoriteClick = null;
 
-  constructor ({event, destinations, onEditClick}) {
+  constructor ({event, destinations, onEditClick, onFavoriteClick}) {
     super();
     this.#event = event;
     this.#destinations = destinations;
     this.#handleEditEvent = onEditClick;
+    this.#handleFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__favorite-btn')
+      .addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template () {
@@ -82,5 +86,10 @@ export default class TripEventView extends AbstractView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditEvent();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }

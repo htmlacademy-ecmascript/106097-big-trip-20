@@ -10,13 +10,15 @@ export default class EventPresenter {
 
   #eventComponent = null;
   #eventEditComponent = null;
+  #handleDataChange = null;
 
   #event = null;
 
-  constructor({eventListContainer, destinationsModel, offersModel}) {
+  constructor({eventListContainer, destinationsModel, offersModel, onDataChange}) {
     this.#eventListContainer = eventListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#handleDataChange = onDataChange;
   }
 
   init(event) {
@@ -30,14 +32,13 @@ export default class EventPresenter {
       destinations: this.#destinationsModel,
       offers: this.#offersModel,
       onEditClick: this.#handleEditClick,
+      onFavoriteClick: this.#handleFavoriteClick
     });
 
     this.#eventEditComponent = new FormEditView({
       event: this.#event,
-      onFormSubmit: () => {
-        this.#closeEventEditForm();
-      },
-      onCloseClick: this.#handlerCloseClick,
+      onFormSubmit: this.#handleFormSubmit,
+      onCloseClick: this.#handleCloseClick,
       offers: this.#offersModel,
       destinations: this.#destinationsModel,
     });
@@ -47,11 +48,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventListContainer.contains(prevEventComponent.element)) {
+    if (this.#eventListContainer.element.contains(prevEventComponent.element)) {
       replace(this.#eventComponent, prevEventComponent);
     }
 
-    if (this.#eventListContainer.contains(prevEventEditComponent.element)) {
+    if (this.#eventListContainer.element.contains(prevEventEditComponent.element)) {
       replace(this.#eventEditComponent, prevEventEditComponent);
     }
 
@@ -77,8 +78,8 @@ export default class EventPresenter {
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #handlerCloseClick = () => {
-    this.#closeEventEditForm();
+  #handleCloseClick = () => {
+    this.#replaceFormToEvent();
   };
 
   #replaceEventToForm() {
@@ -87,10 +88,15 @@ export default class EventPresenter {
 
   #replaceFormToEvent() {
     replace(this.#eventComponent, this.#eventEditComponent);
-  }
-
-  #closeEventEditForm() {
-    this.#replaceFormToEvent();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#event, isFavorite: !this.#event.isFavorite});
+  };
+
+  #handleFormSubmit = (event) => {
+    this.#handleDataChange(event);
+    this.#replaceFormToEvent();
+  };
 }
