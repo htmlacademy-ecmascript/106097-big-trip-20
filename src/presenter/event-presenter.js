@@ -2,6 +2,11 @@ import { render, replace, remove } from '../framework/render';
 import TripEventView from '../view/trip-event';
 import FormEditView from '../view/form-edit';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class EventPresenter {
   #eventListContainer = null;
 
@@ -11,14 +16,17 @@ export default class EventPresenter {
   #eventComponent = null;
   #eventEditComponent = null;
   #handleDataChange = null;
+  #handleModeChange = null;
 
   #event = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({eventListContainer, destinationsModel, offersModel, onDataChange}) {
+  constructor({eventListContainer, destinationsModel, offersModel, onDataChange, onModeChange}) {
     this.#eventListContainer = eventListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(event) {
@@ -48,11 +56,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventListContainer.element.contains(prevEventComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#eventComponent, prevEventComponent);
     }
 
-    if (this.#eventListContainer.element.contains(prevEventEditComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#eventEditComponent, prevEventEditComponent);
     }
 
@@ -63,6 +71,12 @@ export default class EventPresenter {
   destroy() {
     remove(this.#eventComponent);
     remove(this.#eventEditComponent);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToEvent();
+    }
   }
 
   #escKeyDownHandler = (evt) => {
@@ -84,11 +98,14 @@ export default class EventPresenter {
 
   #replaceEventToForm() {
     replace(this.#eventEditComponent, this.#eventComponent);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormToEvent() {
     replace(this.#eventComponent, this.#eventEditComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleFavoriteClick = () => {

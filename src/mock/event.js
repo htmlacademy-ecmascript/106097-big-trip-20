@@ -70,6 +70,7 @@ const mockEvents = [
     ]
   },
   {
+    id: 5,
     type: 'drive',
     destinationId: 5,
     start: new Date('2023-07-25T06:00'),
@@ -84,7 +85,7 @@ const mockEvents = [
     ]
   },
   {
-    id: 5,
+    id: 6,
     type: 'flight',
     destinationId: 6,
     start: new Date('2023-07-26T05:00'),
@@ -107,6 +108,7 @@ const mockEvents = [
     ]
   },
   {
+    id: 7,
     type: 'check-in',
     destinationId: 7,
     start: new Date('2023-07-26T12:00'),
@@ -121,7 +123,7 @@ const mockEvents = [
     ]
   },
   {
-    id: 6,
+    id: 8,
     type: 'sightseeing',
     destinationId: 8,
     start: new Date('2023-07-27T10:00'),
@@ -140,7 +142,7 @@ const mockEvents = [
     ]
   },
   {
-    id: 7,
+    id: 9,
     type: 'restaurant',
     destinationId: 8,
     start: new Date('2023-07-27T19:00'),
