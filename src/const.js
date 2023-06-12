@@ -7,7 +7,7 @@ const EVENT_EMPTY = {
   start: null,
   end: null,
   cost: 0,
-  favourite: false,
+  isFavorite: false,
   offers: []
 };
 
@@ -18,4 +18,10 @@ const FilterType = {
   PAST: 'past',
 };
 
-export { EVENT_EMPTY, TYPES, FilterType };
+const SortType = {
+  DEFAULT: 'date',
+  TIME: 'time',
+  PRICE: 'price'
+};
+
+export { EVENT_EMPTY, TYPES, FilterType, SortType };
