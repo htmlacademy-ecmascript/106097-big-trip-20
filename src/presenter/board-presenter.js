@@ -1,5 +1,5 @@
 import { RenderPosition, render } from '../framework/render';
-import ListView from '../view/list';
+import ListView from '../view/list-view';
 import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';

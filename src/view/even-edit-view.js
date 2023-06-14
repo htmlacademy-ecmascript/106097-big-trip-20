@@ -1,6 +1,6 @@
 import { TYPES } from '../const.js';
 import { capitalizeFirstLetter } from '../utils/utils.js';
-import AbstractView from '../framework/view/abstract-view';
+import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
 
 const createEventTypes = () => {
