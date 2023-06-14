@@ -1,6 +1,6 @@
 import { render, replace, remove } from '../framework/render';
 import TripEventView from '../view/event-view';
-import FormEditView from '../view/even-edit-view';
+import FormEditView from '../view/event-edit-view';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
