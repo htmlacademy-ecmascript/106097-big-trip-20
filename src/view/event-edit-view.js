@@ -2,6 +2,8 @@ import { TYPES } from '../const.js';
 import { capitalizeFirstLetter } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createEventTypes = () => {
   let code = '';
@@ -113,7 +115,8 @@ function createFormEditTemplate (event, allOffers, destinations) {
 }
 
 export default class FormEditView extends AbstractStatefulView {
-  #event = null;
+  #endDatepicker = null;
+  #startDatepicker = null;
   #offers = null;
   #destinations = null;
   #handleFormSubmit = null;
@@ -152,6 +155,64 @@ export default class FormEditView extends AbstractStatefulView {
 
     this.element.querySelectorAll('.event__offer-checkbox')
       .forEach((element) => element.addEventListener('change', this.#eventOfferChangeHandler));
+
+    this.element.querySelector('input[name="event-end-time"]')
+      .addEventListener('change', this.#endDateChangeHandler);
+
+    this.#setEndDatePicker();
+    this.#setStartDatePicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#endDatepicker) {
+      this.#endDatepicker.destroy();
+      this.#endDatepicker = null;
+    }
+
+    if (this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+      this.#startDatepicker = null;
+    }
+  }
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      end: userDate,
+    });
+  };
+
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      start: userDate,
+    });
+  };
+
+  #setEndDatePicker() {
+    if (this._state.end) {
+      this.#endDatepicker = flatpickr(
+        this.element.querySelector('input[name="event-end-time"]'),
+        {
+          dateFormat: 'j F',
+          defaultDate: this._state.end,
+          onChange: this.#endDateChangeHandler,
+        },
+      );
+    }
+  }
+
+  #setStartDatePicker() {
+    if (this._state.start) {
+      this.#startDatepicker = flatpickr(
+        this.element.querySelector('input[name="event-start-time"]'),
+        {
+          dateFormat: 'j F',
+          defaultDate: this._state.start,
+          onChange: this.#startDateChangeHandler,
+        },
+      );
+    }
   }
 
   #formSubmitHandler = (evt) => {
