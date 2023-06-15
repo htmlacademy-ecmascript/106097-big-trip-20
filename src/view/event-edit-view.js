@@ -114,7 +114,7 @@ function createFormEditTemplate (event, allOffers, destinations) {
 }
 
 export default class FormEditView extends AbstractStatefulView {
-  #event = null;
+  #datepicker = null;
   #offers = null;
   #destinations = null;
   #handleFormSubmit = null;
@@ -153,6 +153,40 @@ export default class FormEditView extends AbstractStatefulView {
 
     this.element.querySelectorAll('.event__offer-checkbox')
       .forEach((element) => element.addEventListener('change', this.#eventOfferChangeHandler));
+
+    this.element.querySelector('input[name="event-end-time"]')
+      .addEventListener('change', this.#dueDateChangeHandler);
+
+    this.#setDatePicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  }
+
+  #dueDateChangeHandler = ([userDate]) => {
+    console.log('работает');
+    this.updateElement({
+      end: userDate,
+    });
+  };
+
+  #setDatePicker() {
+    if (this._state.end) {
+      this.#datepicker = flatpickr(
+        this.element.querySelector('input[name="event-end-time"]'),
+        {
+          dateFormat: 'j F',
+          defaultDate: this._state.end,
+          onChange: this.#dueDateChangeHandler,
+        },
+      );
+    }
   }
 
   #formSubmitHandler = (evt) => {
