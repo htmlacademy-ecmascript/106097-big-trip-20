@@ -2,6 +2,7 @@ import { TYPES } from '../const.js';
 import { capitalizeFirstLetter } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
 
 const createEventTypes = () => {
   let code = '';
