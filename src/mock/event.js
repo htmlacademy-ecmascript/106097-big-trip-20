@@ -9,12 +9,7 @@ const mockEvents = [
     end: new Date('2023-07-14T12:30'),
     cost: 100,
     isFavorite: false,
-    offers: [
-      {
-        name: 'Подача ко времени',
-        price: '5'
-      }
-    ]
+    offers: [5]
   },
   {
     id: 2,
@@ -24,12 +19,7 @@ const mockEvents = [
     end: new Date('2023-07-19T19:00'),
     cost: 20,
     isFavorite: false,
-    offers: [
-      {
-        name: 'Выбрать место',
-        price: '5'
-      }
-    ]
+    offers: [3]
   },
   {
     id: 3,
@@ -39,20 +29,7 @@ const mockEvents = [
     end: new Date('2023-07-21T01:30'),
     cost: 40,
     isFavorite: false,
-    offers: [
-      {
-        name: 'Добавить багаж',
-        price: '20'
-      },
-      {
-        name: 'Выбрать место',
-        price: '5'
-      },
-      {
-        name: 'Ужин',
-        price: '15'
-      }
-    ]
+    offers: [2, 3, 4,]
   },
   {
     id: 4,
@@ -62,12 +39,7 @@ const mockEvents = [
     end: new Date('2023-07-21 10:30'),
     cost: 80,
     isFavorite: false,
-    offers: [
-      {
-        name: 'Комфорт класс',
-        price: '20'
-      }
-    ]
+    offers: [6]
   },
   {
     id: 5,
@@ -77,12 +49,7 @@ const mockEvents = [
     end: new Date('2023-07-25T15:00'),
     cost: 90,
     isFavorite: false,
-    offers: [
-      {
-        name: 'Комфорт класс',
-        price: '20'
-      }
-    ]
+    offers: [6]
   },
   {
     id: 6,
@@ -92,20 +59,7 @@ const mockEvents = [
     end: new Date('2023-07-26T08:30'),
     cost: 300,
     isFavorite: false,
-    offers: [
-      {
-        name: 'Возвратный билет',
-        price: '10'
-      },
-      {
-        name: 'Выбрать место',
-        price: '5'
-      },
-      {
-        name: 'Ужин',
-        price: '15'
-      }
-    ]
+    offers: [1, 3, 4]
   },
   {
     id: 7,
@@ -115,12 +69,7 @@ const mockEvents = [
     end: new Date('2023-07-26T14:00'),
     cost: 0,
     isFavorite: false,
-    offers: [
-      {
-        name: 'Раннее заселение',
-        price: '10'
-      }
-    ]
+    offers: [7]
   },
   {
     id: 8,
@@ -130,16 +79,7 @@ const mockEvents = [
     end: new Date('2023-07-27T11:30'),
     cost: 0,
     isFavorite: true,
-    offers: [
-      {
-        name: 'Билет без очереди',
-        price: '5'
-      },
-      {
-        name: 'Гид',
-        price: '15'
-      }
-    ]
+    offers: [8, 9]
   },
   {
     id: 9,
@@ -149,12 +89,7 @@ const mockEvents = [
     end: new Date('2023-07-27T20:00'),
     cost: 25,
     isFavorite: true,
-    offers: [
-      {
-        name: 'Столик у окна',
-        price: '5'
-      }
-    ]
+    offers: [10]
   }
 ];
 

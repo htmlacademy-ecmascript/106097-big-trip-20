@@ -11,7 +11,6 @@ import { generateFilter } from './mock/filter';
 const eventModel = new EventModel();
 const offerModel = new OfferModel({offers: offers});
 const destinationModel = new DestinationModel({destinations: destinations});
-
 const filtersElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 

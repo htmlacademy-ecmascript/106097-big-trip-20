@@ -14,16 +14,25 @@ const createOffers = (offers) => {
   return code;
 };
 
-function createTripEventTemplate (event, destinations) {
-  const {start, end, type, cost, destinationId, isFavorite} = event;
+function createTripEventTemplate (event, allOffers, destinations) {
+  const {start, end, type, cost, destinationId, isFavorite, offers} = event;
 
   const dateForTag = formatDataForTag(start);
   const dateForHuman = formatDataForHuman(start);
   const timeStart = formatTime(start);
   const timeEnd = formatTime(end);
   const duration = getDuration(start, end);
-  const offersTemplate = createOffers(event.offers);
   const destination = destinations.getById(destinationId);
+
+  const filterOffers = () => {
+    const availableOffers = allOffers.getByType(type);
+    const filteredOffers = [];
+    for (const element of offers) {
+      filteredOffers.push(...availableOffers.filter((offer) => offer.id === element));
+    }
+    return filteredOffers;
+  };
+  const offersTemplate = createOffers(filterOffers());
 
   return `<li class="trip-events__item">
   <div class="event">
@@ -65,10 +74,12 @@ export default class TripEventView extends AbstractView {
   #destinations = null;
   #handleEditEvent = null;
   #handleFavoriteClick = null;
+  #offers = null;
 
-  constructor ({event, destinations, onEditClick, onFavoriteClick}) {
+  constructor ({event, destinations, offers, onEditClick, onFavoriteClick}) {
     super();
     this.#event = event;
+    this.#offers = offers;
     this.#destinations = destinations;
     this.#handleEditEvent = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
@@ -80,7 +91,7 @@ export default class TripEventView extends AbstractView {
   }
 
   get template () {
-    return createTripEventTemplate(this.#event, this.#destinations);
+    return createTripEventTemplate(this.#event, this.#offers, this.#destinations);
   }
 
   #editClickHandler = (evt) => {

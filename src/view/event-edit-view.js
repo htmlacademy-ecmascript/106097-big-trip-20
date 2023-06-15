@@ -1,6 +1,6 @@
 import { TYPES } from '../const.js';
 import { capitalizeFirstLetter } from '../utils/utils.js';
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
 
 const createEventTypes = () => {
@@ -19,10 +19,11 @@ const createEventTypes = () => {
 const createOffers = (offers, eventOffers) => {
   let code = '';
   for (const offer of offers) {
-    const checked = eventOffers.filter((i) => i.name === offer.name);
+    const checked = eventOffers.filter((i) => i === offer.id);
+
     code += `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.name}-1" type="checkbox" name="event-offer-${offer.name}" ${checked.length ? 'checked' : ''}>
-    <label class="event__offer-label" for="event-offer-${offer.name}-1">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${offer.name}" ${checked.length ? 'checked' : ''}>
+    <label class="event__offer-label" for="event-offer-${offer.id}">
       <span class="event__offer-title">${offer.name}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
@@ -111,7 +112,7 @@ function createFormEditTemplate (event, allOffers, destinations) {
 </li>`;
 }
 
-export default class FormEditView extends AbstractView {
+export default class FormEditView extends AbstractStatefulView {
   #event = null;
   #offers = null;
   #destinations = null;
@@ -120,31 +121,90 @@ export default class FormEditView extends AbstractView {
 
   constructor({event, onFormSubmit, onCloseClick, offers, destinations}) {
     super();
-    this.#event = event;
+    this._setState(FormEditView.parseEventToState(event));
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
     this.#offers = offers;
     this.#destinations = destinations;
+    this._restoreHandlers();
+  }
 
+  get template () {
+    return createFormEditTemplate(this._state, this.#offers, this.#destinations);
+  }
 
+  reset(event) {
+    this.updateElement(FormEditView.parseEventToState(event));
+  }
+
+  _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#closeClickHandler);
-  }
 
-  get template () {
-    return createFormEditTemplate(this.#event, this.#offers, this.#destinations);
+    this.element.querySelector('.event__input--price')
+      .addEventListener('change', this.#eventPriceChangeHandler);
+
+    this.element.querySelectorAll('.event__type-input')
+      .forEach((element) => element.addEventListener('change', this.#eventTypeChangeHandler));
+
+    this.element.querySelectorAll('.event__offer-checkbox')
+      .forEach((element) => element.addEventListener('change', this.#eventOfferChangeHandler));
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#event);
+    this.#handleFormSubmit(FormEditView.parseStateToEvent(this._state));
   };
 
   #closeClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleCloseClick();
   };
+
+  #eventTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      type: evt.target.value,
+    });
+  };
+
+  #eventPriceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+      cost: evt.target.value,
+    });
+  };
+
+  #eventOfferChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    const { offers } = this._state;
+    if (evt.target.checked) {
+      if (offers.find((offer) => offer === evt.target.dataset.id) === undefined) {
+        this._setState({
+          offers: [...offers, parseInt(evt.target.dataset.id, 10)]
+        });
+      }
+    } else {
+      const offersLeft = offers.filter((offer) => offer !== parseInt(evt.target.dataset.id, 10));
+      this._setState({
+        offers: offersLeft,
+      });
+    }
+  };
+
+  static parseEventToState(event) {
+    return {
+      ...event
+    };
+  }
+
+  static parseStateToEvent(state) {
+    const event = {...state};
+
+    return event;
+  }
 }
