@@ -133,6 +133,10 @@ export default class FormEditView extends AbstractStatefulView {
     return createFormEditTemplate(this._state, this.#offers, this.#destinations);
   }
 
+  reset(event) {
+    this.updateElement(FormEditView.parseEventToState(event));
+  }
+
   _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
