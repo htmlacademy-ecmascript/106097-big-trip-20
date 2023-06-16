@@ -7,8 +7,10 @@ import { destinations } from './mock/destination';
 import OfferModel from './model/offer-model';
 import { offers } from './mock/offer';
 import { generateFilter } from './mock/filter';
+import FilterModel from './model/filter-model';
 
 const eventModel = new EventModel();
+const filterModel = new FilterModel();
 const offerModel = new OfferModel({offers: offers});
 const destinationModel = new DestinationModel({destinations: destinations});
 const filtersElement = document.querySelector('.trip-controls__filters');
