@@ -30,6 +30,4 @@ const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.
 
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
-
-export {getRandomArrayElement, formatDataForTag, formatDataForHuman, formatTime, getDuration, capitalizeFirstLetter, updateItem};
+export {getRandomArrayElement, formatDataForTag, formatDataForHuman, formatTime, getDuration, capitalizeFirstLetter};

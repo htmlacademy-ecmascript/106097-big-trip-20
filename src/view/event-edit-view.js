@@ -121,14 +121,17 @@ export default class FormEditView extends AbstractStatefulView {
   #destinations = null;
   #handleFormSubmit = null;
   #handleCloseClick = null;
+  #handleDeleteClick = null;
 
-  constructor({event, onFormSubmit, onCloseClick, offers, destinations}) {
+  constructor({event, onFormSubmit, onCloseClick, offers, destinations, onDeleteClick}) {
     super();
     this._setState(FormEditView.parseEventToState(event));
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
     this.#offers = offers;
     this.#destinations = destinations;
+    this.#handleDeleteClick = onDeleteClick;
+
     this._restoreHandlers();
   }
 
@@ -159,9 +162,17 @@ export default class FormEditView extends AbstractStatefulView {
     this.element.querySelector('input[name="event-end-time"]')
       .addEventListener('change', this.#endDateChangeHandler);
 
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#eventDeleteClickHandler);
+
     this.#setEndDatePicker();
     this.#setStartDatePicker();
   }
+
+  #eventDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(FormEditView.parseStateToEvent(this._state));
+  };
 
   removeElement() {
     super.removeElement();
