@@ -33,6 +33,10 @@ export default class BoardPresenter {
     this.#renderBoard();
   }
 
+  get events() {
+    return this.#eventsModel.events;
+  }
+
   #renderBoard() {
     this.#boardEvents = [...this.#eventsModel.events];
     this.#sourcedEvents = [...this.#eventsModel.events];
