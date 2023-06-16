@@ -181,12 +181,14 @@ export default class FormEditView extends AbstractStatefulView {
     this.updateElement({
       end: userDate,
     });
+    this.#startDatepicker.set('maxDate', this._state.end);
   };
 
   #startDateChangeHandler = ([userDate]) => {
     this.updateElement({
       start: userDate,
     });
+    this.#endDatepicker.set('minDate', this._state.start);
   };
 
   #setEndDatePicker() {
@@ -194,9 +196,15 @@ export default class FormEditView extends AbstractStatefulView {
       this.#endDatepicker = flatpickr(
         this.element.querySelector('input[name="event-end-time"]'),
         {
-          dateFormat: 'j F',
+          dateFormat: 'd/m/y H:i',
           defaultDate: this._state.end,
           onChange: this.#endDateChangeHandler,
+          enableTime: true,
+          minDate: this._state.start,
+          locale: {
+            firstDayOfWeek: 1,
+          },
+          'time_24hr': true,
         },
       );
     }
@@ -207,9 +215,15 @@ export default class FormEditView extends AbstractStatefulView {
       this.#startDatepicker = flatpickr(
         this.element.querySelector('input[name="event-start-time"]'),
         {
-          dateFormat: 'j F',
-          defaultDate: this._state.start,
+          dateFormat: 'd/m/y H:i',
+          defaultDate: this._state.end,
           onChange: this.#startDateChangeHandler,
+          enableTime: true,
+          maxDate: this._state.end,
+          locale: {
+            firstDayOfWeek: 1,
+          },
+          'time_24hr': true,
         },
       );
     }
@@ -234,8 +248,11 @@ export default class FormEditView extends AbstractStatefulView {
 
   #eventPriceChangeHandler = (evt) => {
     evt.preventDefault();
-    this.updateElement({
-      cost: evt.target.value,
+    this._setState({
+      event: {
+        ...this._state.event,
+        cost: evt.target.value,
+      }
     });
   };
 
