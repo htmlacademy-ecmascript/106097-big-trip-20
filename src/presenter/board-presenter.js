@@ -3,8 +3,9 @@ import ListView from '../view/list-view';
 import SortView from '../view/sort-view';
 import NoEventsView from '../view/no-events-view';
 import EventPresenter from './event-presenter';
-import { SortType, UserAction, UpdateType } from '../const';
+import { SortType, UserAction, UpdateType, FilterType } from '../const';
 import { sortByPrice, sortByTime } from '../utils/event';
+import { filter } from '../utils/filter';
 
 const listTemplate = '<ul class="trip-events__list"></ul>';
 
@@ -15,18 +16,22 @@ export default class BoardPresenter {
   #offersModel = null;
   #eventPresenters = new Map();
   #sortComponent = null;
+  #noEventComponent = null;
+  #filterModel = null;
   #currentSortType = SortType.DEFAULT;
-  #noEventComponent = new NoEventsView();
+  #filterType = FilterType.EVERYTHING;
 
   #listComponent = new ListView({list: listTemplate});
 
-  constructor ({ boardContainer, eventsModel, destinationsModel, offersModel }) {
+  constructor ({ boardContainer, eventsModel, destinationsModel, offersModel, filterModel }) {
     this.#boardContainer = boardContainer;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterModel = filterModel;
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init () {
@@ -34,14 +39,18 @@ export default class BoardPresenter {
   }
 
   get events() {
+    this.#filterType = this.#filterModel.filter;
+    const events = this.#eventsModel.events;
+    const filteredEvents = filter[this.#filterType](events);
+
     switch (this.#currentSortType) {
       case (SortType.TIME):
-        return [...this.#eventsModel.events].sort(sortByTime);
+        return filteredEvents.sort(sortByTime);
       case (SortType.PRICE):
-        return [...this.#eventsModel.events].sort(sortByPrice);
+        return filteredEvents.sort(sortByPrice);
     }
 
-    return this.#eventsModel.events;
+    return filteredEvents;
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -56,7 +65,7 @@ export default class BoardPresenter {
         this.#eventsModel.deleteEvent(updateType, update);
         break;
     }
-  }
+  };
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
@@ -72,14 +81,16 @@ export default class BoardPresenter {
         this.#renderBoard();
         break;
     }
-  }
+  };
 
   #clearBoard({resetSortType = false} = {}) {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noEventComponent);
+    if (this.#noEventComponent) {
+      remove(this.#noEventComponent);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
@@ -89,16 +100,25 @@ export default class BoardPresenter {
   #renderBoard() {
     render(this.#listComponent, this.#boardContainer);
 
-    if (this.events.length === 0) {
-      render(this.#noEventComponent, this.#boardContainer);
+    const eventsCount = this.events.length;
+    if (eventsCount === 0) {
+      this.#renderNoEvents();
       return;
     }
+
     this.#renderSort();
     this.#renderEvents();
   }
 
   #renderEvents() {
     this.events.forEach((event) => this.#renderEvent(event));
+  }
+
+  #renderNoEvents() {
+    this.#noEventComponent = new NoEventsView({
+      filterType: this.#filterType,
+    });
+    render(this.#noEventComponent, this.#boardContainer);
   }
 
   #handleModeChange = () => {

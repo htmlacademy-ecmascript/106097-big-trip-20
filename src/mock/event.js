@@ -5,8 +5,8 @@ const mockEvents = [
     id: 1,
     type: 'taxi',
     destinationId: 1,
-    start: new Date('2023-07-14T12:00'),
-    end: new Date('2023-07-14T12:30'),
+    start: new Date('2023-06-17T12:00'),
+    end: new Date('2023-06-17T12:30'),
     cost: 100,
     isFavorite: false,
     offers: [5]
