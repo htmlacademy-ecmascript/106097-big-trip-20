@@ -36,4 +36,9 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export { EVENT_EMPTY, TYPES, FilterType, SortType, UserAction, UpdateType };
+const EditType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING',
+};
+
+export { EVENT_EMPTY, TYPES, FilterType, SortType, UserAction, UpdateType, EditType };

@@ -1,4 +1,4 @@
-import { TYPES } from '../const.js';
+import { TYPES, EditType } from '../const.js';
 import { capitalizeFirstLetter } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
@@ -52,7 +52,7 @@ const createDestinationsTemplate = (destinations) => {
   return destinationItemsTemplate;
 };
 
-function createFormEditTemplate (event, allOffers, destinations) {
+function createFormEditTemplate (event, allOffers, destinations, editingType) {
   const {type, destinationId, offers, cost, start, end} = event;
   const offersTemplate = createOffers(allOffers.getByType(type), offers);
 
@@ -101,10 +101,11 @@ function createFormEditTemplate (event, allOffers, destinations) {
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+      <button class="event__reset-btn" type="reset">${editingType === EditType.EDITING ? 'Delete' : 'Cancel'}</button>
+      ${editingType === EditType.EDITING ? `<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>` : ''}
+
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
@@ -132,8 +133,11 @@ export default class FormEditView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleCloseClick = null;
   #handleDeleteClick = null;
+  #handleCancelClick = null;
 
-  constructor({event = EMPTY_POINT, onFormSubmit, onCloseClick, offers, destinations, onDeleteClick}) {
+  #type;
+
+  constructor({event = EMPTY_POINT, onFormSubmit, onCloseClick, offers, destinations, onDeleteClick, onCancelClick, type = EditType.EDITING}) {
     super();
     this._setState(FormEditView.parseEventToState(event));
     this.#handleFormSubmit = onFormSubmit;
@@ -141,24 +145,37 @@ export default class FormEditView extends AbstractStatefulView {
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleDeleteClick = onDeleteClick;
+    this.#handleCancelClick = onCancelClick;
 
-    this._restoreHandlers();
+    this.#type = type;
+
+    this._restoreHandlers(this.#type);
   }
 
   get template () {
-    return createFormEditTemplate(this._state, this.#offers, this.#destinations);
+    return createFormEditTemplate(this._state, this.#offers, this.#destinations, this.#type);
   }
 
   reset(event) {
     this.updateElement(FormEditView.parseEventToState(event));
   }
 
-  _restoreHandlers() {
+  _restoreHandlers(type) {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#closeClickHandler);
+    if (type === EditType.EDITING) {
+      this.element.querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#closeClickHandler);
+
+      this.element.querySelector('.event__reset-btn')
+        .addEventListener('click', this.#eventDeleteClickHandler);
+    }
+
+    if (type === EditType.CREATING) {
+      this.element.querySelector('.event__reset-btn')
+        .addEventListener('click', this.#eventCancelClickHandler);
+    }
 
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#eventPriceChangeHandler);
@@ -172,9 +189,6 @@ export default class FormEditView extends AbstractStatefulView {
     this.element.querySelector('input[name="event-end-time"]')
       .addEventListener('change', this.#endDateChangeHandler);
 
-    this.element.querySelector('.event__reset-btn')
-      .addEventListener('click', this.#eventDeleteClickHandler);
-
     this.#setEndDatePicker();
     this.#setStartDatePicker();
   }
@@ -182,6 +196,11 @@ export default class FormEditView extends AbstractStatefulView {
   #eventDeleteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleDeleteClick(FormEditView.parseStateToEvent(this._state));
+  };
+
+  #eventCancelClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCancelClick();
   };
 
   removeElement() {

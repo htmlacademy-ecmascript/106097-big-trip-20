@@ -22,6 +22,9 @@ export default class BoardPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #newEventPresenter = null;
+  #handleDestroy;
+
+  #isCreating = false;
 
   #listComponent = new ListView({list: listTemplate});
 
@@ -31,11 +34,12 @@ export default class BoardPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
+    this.#handleDestroy = onNewEventDestroy;
 
     this.#newEventPresenter = new NewEventPresenter({
       onDataChange: this.#handleViewAction,
       eventListContainer: this.#listComponent.element,
-      onDestroy: onNewEventDestroy,
+      onDestroy: this.#newEventDestroyHandler,
       offers: this.#offersModel,
       destinations: this.#destinationsModel,
     });
@@ -64,6 +68,7 @@ export default class BoardPresenter {
   }
 
   createEvent() {
+    this.#isCreating = true;
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(
       UpdateType.MAJOR,
@@ -71,6 +76,12 @@ export default class BoardPresenter {
     );
     this.#newEventPresenter.init();
   }
+
+  #newEventDestroyHandler = () => {
+    this.#handleDestroy();
+    this.#isCreating = false;
+    this.#renderNoEvents();
+  };
 
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
@@ -121,7 +132,7 @@ export default class BoardPresenter {
     render(this.#listComponent, this.#boardContainer);
 
     const eventsCount = this.events.length;
-    if (eventsCount === 0) {
+    if (eventsCount === 0 && !this.#isCreating) {
       this.#renderNoEvents();
       return;
     }
