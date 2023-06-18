@@ -1,6 +1,7 @@
 import { render, replace, remove } from '../framework/render';
 import TripEventView from '../view/event-view';
 import FormEditView from '../view/event-edit-view';
+import { UserAction, UpdateType } from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -40,7 +41,7 @@ export default class EventPresenter {
       destinations: this.#destinationsModel,
       offers: this.#offersModel,
       onEditClick: this.#handleEditClick,
-      onFavoriteClick: this.#handleFavoriteClick
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#eventEditComponent = new FormEditView({
@@ -49,6 +50,7 @@ export default class EventPresenter {
       onCloseClick: this.#handleCloseClick,
       offers: this.#offersModel,
       destinations: this.#destinationsModel,
+      onDeleteClick: this.#handleDeleteClick,
     });
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -112,11 +114,28 @@ export default class EventPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      {...this.#event, isFavorite: !this.#event.isFavorite},
+    );
   };
 
-  #handleFormSubmit = (event) => {
-    this.#handleDataChange(event);
+  #handleFormSubmit = (update) => {
+    this.#handleDataChange(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      update,
+    );
     this.#replaceFormToEvent();
+  };
+
+  #handleDeleteClick = (event) => {
+    this.#handleDataChange(
+      UserAction.DELETE_EVENT,
+      UpdateType.MINOR,
+      event,
+    );
+    this.destroy();
   };
 }
