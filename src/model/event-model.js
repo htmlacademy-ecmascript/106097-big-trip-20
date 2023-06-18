@@ -11,7 +11,27 @@ export default class EventModel extends Observable {
     super();
     this.#eventsApiService = eventsApiService;
 
-    this.#eventsApiService.then();
+    this.#eventsApiService.events.then((events) => {
+      console.log(events.map(this.#adaptToClient));
+    });
+  }
+
+  #adaptToClient(event) {
+    const adaptedEvent = {...event,
+      cost: event['base_price'],
+      start: event['date_from'],
+      end: event['date_to'],
+      destinationId: event['destination'],
+      isFavorite: event['is_favorite'],
+    };
+
+    delete adaptedEvent['base_price'];
+    delete adaptedEvent['date_from'];
+    delete adaptedEvent['date_to'];
+    delete adaptedEvent['destination'];
+    delete adaptedEvent['is_favorite'];
+
+    return adaptedEvent;
   }
 
   get events() {
