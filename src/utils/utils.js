@@ -26,8 +26,6 @@ const getDuration = (start, end) => {
   return `${minutes}M`;
 };
 
-const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
-
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-export {getRandomArrayElement, formatDataForTag, formatDataForHuman, formatTime, getDuration, capitalizeFirstLetter};
+export {formatDataForTag, formatDataForHuman, formatTime, getDuration, capitalizeFirstLetter};

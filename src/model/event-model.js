@@ -1,19 +1,12 @@
-import { getRandomEvent } from '../mock/event';
 import Observable from '../framework/observable';
-
-const EVENTS_COUNT = 9;
 
 export default class EventModel extends Observable {
   #eventsApiService = null;
-  #events = Array.from({length: EVENTS_COUNT}, getRandomEvent);
+  #events = [];
 
   constructor(eventsApiService) {
     super();
     this.#eventsApiService = eventsApiService;
-
-    this.#eventsApiService.events.then((events) => {
-      console.log(events.map(this.#adaptToClient));
-    });
   }
 
   #adaptToClient(event) {
@@ -36,6 +29,15 @@ export default class EventModel extends Observable {
 
   get events() {
     return this.#events;
+  }
+
+  async init() {
+    try {
+      const events = await this.#eventsApiService.events;
+      this.#events = events.map(this.#adaptToClient);
+    } catch (err) {
+      this.#events = [];
+    }
   }
 
   updateEvent(updateType, update) {

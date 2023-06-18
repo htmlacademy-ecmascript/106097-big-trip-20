@@ -55,3 +55,4 @@ render(newEventButtonComponent, tripMainElement);
 
 filterPresenter.init();
 boardPresenter.init();
+eventModel.init();
