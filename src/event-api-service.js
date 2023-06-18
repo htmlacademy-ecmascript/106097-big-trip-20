@@ -4,6 +4,7 @@ const Method = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
+  DELETE: 'DELETE'
 };
 
 export default class EventApiService extends ApiService {
@@ -27,7 +28,7 @@ export default class EventApiService extends ApiService {
 
   async addEvent(event) {
     const response = await this._load({
-      url: 'events',
+      url: 'points',
       method: Method.POST,
       body: JSON.stringify(this.#adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -36,6 +37,15 @@ export default class EventApiService extends ApiService {
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  async deleteEvent(event) {
+    const response = await this._load({
+      url: `points/${event.id}`,
+      method: Method.DELETE,
+    });
+
+    return response;
   }
 
   #adaptToServer(event) {
