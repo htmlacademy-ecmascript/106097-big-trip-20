@@ -4,7 +4,15 @@ import Observable from '../framework/observable';
 const EVENTS_COUNT = 9;
 
 export default class EventModel extends Observable {
+  #eventsApiService = null;
   #events = Array.from({length: EVENTS_COUNT}, getRandomEvent);
+
+  constructor(eventsApiService) {
+    super();
+    this.#eventsApiService = eventsApiService;
+
+    this.#eventsApiService.then();
+  }
 
   get events() {
     return this.#events;

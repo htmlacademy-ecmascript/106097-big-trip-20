@@ -8,8 +8,14 @@ import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter';
 import NewEventButtonView from './view/new-event-btn-view';
 import { render } from './framework/render';
+import EventApiService from './event-api-service';
 
-const eventModel = new EventModel();
+const AUTHORIZATION = 'Basic yW2wrW44xdo1wq2J0';
+const END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
+
+const eventModel = new EventModel({
+  eventsApiService: new EventApiService(END_POINT, AUTHORIZATION),
+});
 const filterModel = new FilterModel();
 const offerModel = new OfferModel({offers: offers});
 const destinationModel = new DestinationModel({destinations: destinations});
