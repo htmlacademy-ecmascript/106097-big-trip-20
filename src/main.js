@@ -6,12 +6,15 @@ import OfferModel from './model/offer-model';
 import { offers } from './mock/offer';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter';
+import NewEventButtonView from './view/new-event-btn-view';
+import { render } from './framework/render';
 
 const eventModel = new EventModel();
 const filterModel = new FilterModel();
 const offerModel = new OfferModel({offers: offers});
 const destinationModel = new DestinationModel({destinations: destinations});
 const tripEventsElement = document.querySelector('.trip-events');
+const tripMainElement = document.querySelector('.trip-main');
 
 const filterContainerElement = document.querySelector('.trip-main__trip-controls');
 const filterPresenter = new FilterPresenter({
@@ -25,8 +28,24 @@ const boardPresenter = new BoardPresenter({
   eventsModel: eventModel,
   destinationsModel: destinationModel,
   offersModel: offerModel,
-  filterModel: filterModel
+  filterModel: filterModel,
+  onNewEventDestroy: handleNewEventFormClose,
 });
+
+const newEventButtonComponent = new NewEventButtonView({
+  onClick: handleNewEventButtonClick,
+});
+
+function handleNewEventFormClose() {
+  newEventButtonComponent.element.disabled = false;
+}
+
+function handleNewEventButtonClick() {
+  boardPresenter.createEvent();
+  newEventButtonComponent.element.disabled = true;
+}
+
+render(newEventButtonComponent, tripMainElement);
 
 filterPresenter.init();
 boardPresenter.init();

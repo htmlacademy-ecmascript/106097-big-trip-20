@@ -6,6 +6,7 @@ import EventPresenter from './event-presenter';
 import { SortType, UserAction, UpdateType, FilterType } from '../const';
 import { sortByPrice, sortByTime } from '../utils/event';
 import { filter } from '../utils/filter';
+import NewEventPresenter from './new-event-presenter';
 
 const listTemplate = '<ul class="trip-events__list"></ul>';
 
@@ -20,15 +21,24 @@ export default class BoardPresenter {
   #filterModel = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
+  #newEventPresenter = null;
 
   #listComponent = new ListView({list: listTemplate});
 
-  constructor ({ boardContainer, eventsModel, destinationsModel, offersModel, filterModel }) {
+  constructor ({ boardContainer, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#boardContainer = boardContainer;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
+
+    this.#newEventPresenter = new NewEventPresenter({
+      onDataChange: this.#handleViewAction,
+      eventListContainer: this.#listComponent.element,
+      onDestroy: onNewEventDestroy,
+      offers: this.#offersModel,
+      destinations: this.#destinationsModel,
+    });
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -51,6 +61,15 @@ export default class BoardPresenter {
     }
 
     return filteredEvents;
+  }
+
+  createEvent() {
+    this.#currentSortType = SortType.DEFAULT;
+    this.#filterModel.setFilter(
+      UpdateType.MAJOR,
+      FilterType.EVERYTHING,
+    );
+    this.#newEventPresenter.init();
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -84,6 +103,7 @@ export default class BoardPresenter {
   };
 
   #clearBoard({resetSortType = false} = {}) {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
 
@@ -122,6 +142,7 @@ export default class BoardPresenter {
   }
 
   #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   };
 

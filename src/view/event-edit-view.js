@@ -5,6 +5,16 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+const EMPTY_POINT = {
+  type: 'taxi',
+  destinationId: 1,
+  start: new Date(),
+  end: new Date(),
+  cost: 100,
+  isFavorite: false,
+  offers: []
+};
+
 const createEventTypes = () => {
   let code = '';
 
@@ -123,7 +133,7 @@ export default class FormEditView extends AbstractStatefulView {
   #handleCloseClick = null;
   #handleDeleteClick = null;
 
-  constructor({event, onFormSubmit, onCloseClick, offers, destinations, onDeleteClick}) {
+  constructor({event = EMPTY_POINT, onFormSubmit, onCloseClick, offers, destinations, onDeleteClick}) {
     super();
     this._setState(FormEditView.parseEventToState(event));
     this.#handleFormSubmit = onFormSubmit;
