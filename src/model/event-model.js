@@ -5,7 +5,7 @@ export default class EventModel extends Observable {
   #eventsApiService = null;
   #events = [];
 
-  constructor(eventsApiService) {
+  constructor({eventsApiService}) {
     super();
     this.#eventsApiService = eventsApiService;
   }
@@ -66,13 +66,19 @@ export default class EventModel extends Observable {
     }
   }
 
-  addEvent(updateType, update) {
-    this.#events = [
-      update,
-      ...this.#events,
-    ];
+  async addEvent(updateType, update) {
+    try {
+      const response = await this.#eventsApiService.addEvent(update);
+      const newEvent = this.#adaptToClient(response);
+      this.#events = [
+        newEvent,
+        ...this.#events,
+      ];
 
-    this._notify(updateType, update);
+      this._notify(updateType, newEvent);
+    } catch (err) {
+      throw new Error('Can\'t add event');
+    }
   }
 
   deleteEvent(updateType, update) {
