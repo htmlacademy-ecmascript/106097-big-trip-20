@@ -181,9 +181,9 @@ export default class BoardPresenter {
       return;
     }
 
+    this.#currentSortType = sortType;
     this.#clearBoard();
     this.#renderBoard();
-    this.#currentSortType = sortType;
   };
 
   #renderSort() {

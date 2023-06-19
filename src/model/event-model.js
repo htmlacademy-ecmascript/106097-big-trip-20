@@ -4,6 +4,7 @@ import { UpdateType } from '../const';
 export default class EventModel extends Observable {
   #eventsApiService = null;
   #events = [];
+  #offers = [];
 
   constructor({eventsApiService}) {
     super();
@@ -13,8 +14,8 @@ export default class EventModel extends Observable {
   #adaptToClient(event) {
     const adaptedEvent = {...event,
       cost: event['base_price'],
-      start: event['date_from'],
-      end: event['date_to'],
+      start: event['date_from'] !== null ? new Date(event['date_from']) : event['date_from'],
+      end: event['date_to'] !== null ? new Date(event['date_to']) : event['date_to'],
       destinationId: event['destination'],
       isFavorite: event['is_favorite'],
     };

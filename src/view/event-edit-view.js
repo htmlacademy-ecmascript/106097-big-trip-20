@@ -7,7 +7,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 const EMPTY_POINT = {
   type: 'taxi',
-  destinationId: 1,
+  destinationId: '',
   start: new Date(),
   end: new Date(),
   cost: 100,
@@ -36,7 +36,7 @@ const createOffers = (offers, eventOffers) => {
     code += `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${offer.name}" ${checked.length ? 'checked' : ''}>
     <label class="event__offer-label" for="event-offer-${offer.id}">
-      <span class="event__offer-title">${offer.name}</span>
+      <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </label>
@@ -47,15 +47,22 @@ const createOffers = (offers, eventOffers) => {
 
 const createDestinationsTemplate = (destinations) => {
   const destinationItemsTemplate = destinations
-    .map((element) => `<option value="${element.town}"></option>`)
+    .map((element) => `<option value="${element.name}"></option>`)
     .join('');
   return destinationItemsTemplate;
 };
 
+function createDestinationPicturesTemaplate(pictures) {
+  const picturesTemplate = pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
+  return `
+  <div class="event__photos-container">
+  <div class="event__photos-tape">${picturesTemplate}</div>
+  </div>`;
+}
+
 function createFormEditTemplate (event, allOffers, destinations, editingType) {
   const {type, destinationId, offers, cost, start, end} = event;
   const offersTemplate = createOffers(allOffers.getByType(type), offers);
-
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -78,9 +85,9 @@ function createFormEditTemplate (event, allOffers, destinations, editingType) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinations.getById(destinationId).town}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${editingType === EditType.EDITING ? destinations.getById(destinationId).name : ''}" list="destination-list-1">
         <datalist id="destination-list-1">
-          ${createDestinationsTemplate(destinations.get().destinations)}
+          ${createDestinationsTemplate(destinations.destinations)}
         </datalist>
       </div>
 
@@ -116,10 +123,16 @@ function createFormEditTemplate (event, allOffers, destinations, editingType) {
         </div>
       </section>
 
+      ${destinationId ? `
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destinations.getById(destinationId).description}</p>
+
+        ${editingType === EditType.CREATING ? createDestinationPicturesTemaplate(destinations.getById(destinationId).pictures) : ''}
+
       </section>
+      ` : ''}
+
     </section>
   </form>
 </li>`;

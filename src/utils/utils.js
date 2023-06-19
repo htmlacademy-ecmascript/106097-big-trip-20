@@ -7,7 +7,6 @@ const TIME_FORMAT = 'hh:mm';
 const formatDataForTag = (date) => date ? dayjs(date).format(DATE_FORMAT_FOR_TAG) : '';
 const formatDataForHuman = (date) => date ? dayjs(date).format(DATE_FORMAT_FOR_HUMAN) : '';
 const formatTime = (date) => date ? dayjs(date).format(TIME_FORMAT) : '';
-// const getDuration = (start, end) => dayjs(end - start).format(DURATION_FORMAT);
 const getDuration = (start, end) => {
   const duration = end - start;
 
