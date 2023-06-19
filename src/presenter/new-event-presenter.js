@@ -61,8 +61,14 @@ export default class NewEventPresenter {
       UpdateType.MINOR,
       event,
     );
-    this.destroy();
   };
+
+  setSaving() {
+    this.#eventEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
 
   #handleCancelClick = () => {
     remove(this.#eventEditComponent);
