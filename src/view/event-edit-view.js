@@ -1,4 +1,4 @@
-import { TYPES } from '../const.js';
+import { TYPES, EditType } from '../const.js';
 import { capitalizeFirstLetter } from '../utils/utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import dayjs from 'dayjs';
@@ -7,7 +7,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 const EMPTY_POINT = {
   type: 'taxi',
-  destinationId: 1,
+  destinationId: '',
   start: new Date(),
   end: new Date(),
   cost: 100,
@@ -36,7 +36,7 @@ const createOffers = (offers, eventOffers) => {
     code += `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${offer.name}" ${checked.length ? 'checked' : ''}>
     <label class="event__offer-label" for="event-offer-${offer.id}">
-      <span class="event__offer-title">${offer.name}</span>
+      <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </label>
@@ -47,15 +47,22 @@ const createOffers = (offers, eventOffers) => {
 
 const createDestinationsTemplate = (destinations) => {
   const destinationItemsTemplate = destinations
-    .map((element) => `<option value="${element.town}"></option>`)
+    .map((element) => `<option value="${element.name}"></option>`)
     .join('');
   return destinationItemsTemplate;
 };
 
-function createFormEditTemplate (event, allOffers, destinations) {
-  const {type, destinationId, offers, cost, start, end} = event;
-  const offersTemplate = createOffers(allOffers.getByType(type), offers);
+function createDestinationPicturesTemaplate(pictures) {
+  const picturesTemplate = pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
+  return `
+  <div class="event__photos-container">
+  <div class="event__photos-tape">${picturesTemplate}</div>
+  </div>`;
+}
 
+function createFormEditTemplate (event, allOffers, destinations, editingType) {
+  const {type, destinationId, offers, cost, start, end, isDisabled, isSaving} = event;
+  const offersTemplate = createOffers(allOffers.getByType(type), offers);
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -64,7 +71,7 @@ function createFormEditTemplate (event, allOffers, destinations) {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" required ${isDisabled ? 'disabled' : ''}>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
@@ -78,18 +85,18 @@ function createFormEditTemplate (event, allOffers, destinations) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinations.getById(destinationId).town}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${editingType === EditType.EDITING ? destinations.getById(destinationId).name : ''}" list="destination-list-1"  ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-1">
-          ${createDestinationsTemplate(destinations.get().destinations)}
+          ${createDestinationsTemplate(destinations.destinations)}
         </datalist>
       </div>
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(start).format('DD/MM/YYYY HH:mm')}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(start).format('DD/MM/YYYY HH:mm')}"  ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(end).format('DD/MM/YYYY HH:mm')}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(end).format('DD/MM/YYYY HH:mm')}"  ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -97,14 +104,15 @@ function createFormEditTemplate (event, allOffers, destinations) {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${cost}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${cost}"  ${isDisabled ? 'disabled' : ''}>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+      <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset"  ${isDisabled ? 'disabled' : ''}>${editingType === EditType.EDITING ? 'Delete' : 'Cancel'}</button>
+      ${editingType === EditType.EDITING ? `<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>` : ''}
+
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
@@ -115,10 +123,16 @@ function createFormEditTemplate (event, allOffers, destinations) {
         </div>
       </section>
 
+      ${destinationId ? `
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destinations.getById(destinationId).description}</p>
+
+        ${editingType === EditType.CREATING ? createDestinationPicturesTemaplate(destinations.getById(destinationId).pictures) : ''}
+
       </section>
+      ` : ''}
+
     </section>
   </form>
 </li>`;
@@ -132,8 +146,11 @@ export default class FormEditView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleCloseClick = null;
   #handleDeleteClick = null;
+  #handleCancelClick = null;
 
-  constructor({event = EMPTY_POINT, onFormSubmit, onCloseClick, offers, destinations, onDeleteClick}) {
+  #type;
+
+  constructor({event = EMPTY_POINT, onFormSubmit, onCloseClick, offers, destinations, onDeleteClick, onCancelClick, type = EditType.EDITING}) {
     super();
     this._setState(FormEditView.parseEventToState(event));
     this.#handleFormSubmit = onFormSubmit;
@@ -141,24 +158,37 @@ export default class FormEditView extends AbstractStatefulView {
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleDeleteClick = onDeleteClick;
+    this.#handleCancelClick = onCancelClick;
 
-    this._restoreHandlers();
+    this.#type = type;
+
+    this._restoreHandlers(this.#type);
   }
 
   get template () {
-    return createFormEditTemplate(this._state, this.#offers, this.#destinations);
+    return createFormEditTemplate(this._state, this.#offers, this.#destinations, this.#type);
   }
 
   reset(event) {
     this.updateElement(FormEditView.parseEventToState(event));
   }
 
-  _restoreHandlers() {
+  _restoreHandlers(type) {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
-    this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#closeClickHandler);
+    if (type === EditType.EDITING) {
+      this.element.querySelector('.event__rollup-btn')
+        .addEventListener('click', this.#closeClickHandler);
+
+      this.element.querySelector('.event__reset-btn')
+        .addEventListener('click', this.#eventDeleteClickHandler);
+    }
+
+    if (type === EditType.CREATING) {
+      this.element.querySelector('.event__reset-btn')
+        .addEventListener('click', this.#eventCancelClickHandler);
+    }
 
     this.element.querySelector('.event__input--price')
       .addEventListener('change', this.#eventPriceChangeHandler);
@@ -172,9 +202,6 @@ export default class FormEditView extends AbstractStatefulView {
     this.element.querySelector('input[name="event-end-time"]')
       .addEventListener('change', this.#endDateChangeHandler);
 
-    this.element.querySelector('.event__reset-btn')
-      .addEventListener('click', this.#eventDeleteClickHandler);
-
     this.#setEndDatePicker();
     this.#setStartDatePicker();
   }
@@ -182,6 +209,11 @@ export default class FormEditView extends AbstractStatefulView {
   #eventDeleteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleDeleteClick(FormEditView.parseStateToEvent(this._state));
+  };
+
+  #eventCancelClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCancelClick();
   };
 
   removeElement() {
@@ -297,12 +329,19 @@ export default class FormEditView extends AbstractStatefulView {
 
   static parseEventToState(event) {
     return {
-      ...event
+      ...event,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
   static parseStateToEvent(state) {
     const event = {...state};
+
+    delete event.isDisabled;
+    delete event.isSaving;
+    delete event.isDeleting;
 
     return event;
   }

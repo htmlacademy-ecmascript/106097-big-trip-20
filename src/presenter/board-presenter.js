@@ -7,6 +7,7 @@ import { SortType, UserAction, UpdateType, FilterType } from '../const';
 import { sortByPrice, sortByTime } from '../utils/event';
 import { filter } from '../utils/filter';
 import NewEventPresenter from './new-event-presenter';
+import LoadingView from '../view/loading-view';
 
 const listTemplate = '<ul class="trip-events__list"></ul>';
 
@@ -22,8 +23,13 @@ export default class BoardPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #newEventPresenter = null;
+  #handleDestroy;
+
+  #isCreating = false;
+  #isLoading = true;
 
   #listComponent = new ListView({list: listTemplate});
+  #loadingComponent = new LoadingView();
 
   constructor ({ boardContainer, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#boardContainer = boardContainer;
@@ -31,11 +37,12 @@ export default class BoardPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filterModel = filterModel;
+    this.#handleDestroy = onNewEventDestroy;
 
     this.#newEventPresenter = new NewEventPresenter({
       onDataChange: this.#handleViewAction,
       eventListContainer: this.#listComponent.element,
-      onDestroy: onNewEventDestroy,
+      onDestroy: this.#newEventDestroyHandler,
       offers: this.#offersModel,
       destinations: this.#destinationsModel,
     });
@@ -64,6 +71,7 @@ export default class BoardPresenter {
   }
 
   createEvent() {
+    this.#isCreating = true;
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(
       UpdateType.MAJOR,
@@ -72,15 +80,24 @@ export default class BoardPresenter {
     this.#newEventPresenter.init();
   }
 
+  #newEventDestroyHandler = () => {
+    this.#handleDestroy();
+    this.#isCreating = false;
+    this.#renderNoEvents();
+  };
+
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
+        this.#eventPresenters.get(update.id).setSaving();
         this.#eventsModel.updateEvent(updateType, update);
         break;
       case UserAction.ADD_EVENT:
+        this.#newEventPresenter.setSaving();
         this.#eventsModel.addEvent(updateType, update);
         break;
       case UserAction.DELETE_EVENT:
+        this.#eventPresenters.get(update.id).setDeleting();
         this.#eventsModel.deleteEvent(updateType, update);
         break;
     }
@@ -99,8 +116,17 @@ export default class BoardPresenter {
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+  }
 
   #clearBoard({resetSortType = false} = {}) {
     this.#newEventPresenter.destroy();
@@ -108,6 +134,8 @@ export default class BoardPresenter {
     this.#eventPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
+
     if (this.#noEventComponent) {
       remove(this.#noEventComponent);
     }
@@ -120,8 +148,13 @@ export default class BoardPresenter {
   #renderBoard() {
     render(this.#listComponent, this.#boardContainer);
 
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const eventsCount = this.events.length;
-    if (eventsCount === 0) {
+    if (eventsCount === 0 && !this.#isCreating) {
       this.#renderNoEvents();
       return;
     }
@@ -151,9 +184,9 @@ export default class BoardPresenter {
       return;
     }
 
+    this.#currentSortType = sortType;
     this.#clearBoard();
     this.#renderBoard();
-    this.#currentSortType = sortType;
   };
 
   #renderSort() {

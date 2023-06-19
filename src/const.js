@@ -34,6 +34,12 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
-export { EVENT_EMPTY, TYPES, FilterType, SortType, UserAction, UpdateType };
+const EditType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING',
+};
+
+export { EVENT_EMPTY, TYPES, FilterType, SortType, UserAction, UpdateType, EditType };

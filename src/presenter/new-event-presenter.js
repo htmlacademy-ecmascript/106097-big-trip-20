@@ -1,7 +1,6 @@
-import { nanoid } from 'nanoid';
 import { render, remove, RenderPosition } from '../framework/render';
 import FormEditView from '../view/event-edit-view';
-import { UserAction, UpdateType } from '../const';
+import { UserAction, UpdateType, EditType } from '../const';
 
 export default class NewEventPresenter {
   #eventListContainer = null;
@@ -27,9 +26,10 @@ export default class NewEventPresenter {
 
     this.#eventEditComponent = new FormEditView({
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick,
       offers: this.#offers,
       destinations: this.#destinations,
+      type: EditType.CREATING,
+      onCancelClick: this.#handleCancelClick,
     });
 
     render(this.#eventEditComponent, this.#eventListContainer, RenderPosition.AFTERBEGIN);
@@ -59,15 +59,19 @@ export default class NewEventPresenter {
     this.#handleDataChange(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      {
-        id: nanoid(),
-        ...event
-      }
+      event,
     );
-    this.destroy();
   };
 
-  #handleDeleteClick = () => {
+  setSaving() {
+    this.#eventEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  #handleCancelClick = () => {
+    remove(this.#eventEditComponent);
     this.destroy();
   };
 }
