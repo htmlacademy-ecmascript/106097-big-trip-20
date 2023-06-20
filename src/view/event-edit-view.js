@@ -302,10 +302,8 @@ export default class FormEditView extends AbstractStatefulView {
   #eventPriceChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      event: {
-        ...this._state.event,
-        cost: evt.target.value,
-      }
+      ...this._state.event,
+      cost: parseInt(evt.target.value,10),
     });
   };
 
