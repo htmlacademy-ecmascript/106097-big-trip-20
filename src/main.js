@@ -61,10 +61,13 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-destinationModel.init();
-offerModel.init();
-eventModel.init()
-  .finally(() => render(newEventButtonComponent, tripMainElement));
-// headerPresenter.init();
-filterPresenter.init();
-boardPresenter.init();
+async function init() {
+  await destinationModel.init();
+  await offerModel.init();
+  await eventModel.init()
+    .finally(() => render(newEventButtonComponent, tripMainElement));
+  // headerPresenter.init();
+  filterPresenter.init();
+  boardPresenter.init();
+}
+init();
