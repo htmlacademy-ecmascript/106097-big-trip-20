@@ -33,11 +33,11 @@ const filterPresenter = new FilterPresenter({
   eventsModel: eventModel
 });
 
-const headerPresenter = new HeaderPresenter({
-  headerContainer: tripMainElement,
-  eventModel: eventModel,
-  destinationModel: destinationModel,
-});
+// const headerPresenter = new HeaderPresenter({
+//   headerContainer: tripMainElement,
+//   eventModel: eventModel,
+//   destinationModel: destinationModel,
+// });
 
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventsElement,
@@ -65,6 +65,6 @@ destinationModel.init();
 offerModel.init();
 eventModel.init()
   .finally(() => render(newEventButtonComponent, tripMainElement));
-headerPresenter.init();
+// headerPresenter.init();
 filterPresenter.init();
 boardPresenter.init();
