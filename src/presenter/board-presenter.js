@@ -8,8 +8,14 @@ import { sortByPrice, sortByTime } from '../utils/event';
 import { filter } from '../utils/filter';
 import NewEventPresenter from './new-event-presenter';
 import LoadingView from '../view/loading-view';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 const listTemplate = '<ul class="trip-events__list"></ul>';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -30,6 +36,11 @@ export default class BoardPresenter {
 
   #listComponent = new ListView({list: listTemplate});
   #loadingComponent = new LoadingView();
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor ({ boardContainer, eventsModel, destinationsModel, offersModel, filterModel, onNewEventDestroy }) {
     this.#boardContainer = boardContainer;
@@ -87,6 +98,8 @@ export default class BoardPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this.#eventPresenters.get(update.id).setSaving();
@@ -113,6 +126,8 @@ export default class BoardPresenter {
         }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
