@@ -7,6 +7,7 @@ import FilterPresenter from './presenter/filter-presenter';
 import NewEventButtonView from './view/new-event-btn-view';
 import { render } from './framework/render';
 import EventApiService from './events-api-service';
+import HeaderPresenter from './presenter/header-presenter';
 
 const AUTHORIZATION = 'Basic yW2wrW44xdo1wq2J0';
 const END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
@@ -32,6 +33,12 @@ const filterPresenter = new FilterPresenter({
   eventsModel: eventModel
 });
 
+const headerPresenter = new HeaderPresenter({
+  headerContainer: tripMainElement,
+  eventModel: eventModel,
+  destinationModel: destinationModel,
+});
+
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventsElement,
   eventsModel: eventModel,
@@ -54,9 +61,10 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-filterPresenter.init();
-boardPresenter.init();
 destinationModel.init();
 offerModel.init();
 eventModel.init()
   .finally(() => render(newEventButtonComponent, tripMainElement));
+headerPresenter.init();
+filterPresenter.init();
+boardPresenter.init();
