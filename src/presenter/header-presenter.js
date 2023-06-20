@@ -13,20 +13,12 @@ export default class HeaderPresenter {
     this.#destinationModel = destinationModel;
   }
 
-  get events() {
-    return this.#eventModel.events;
-  }
-
-  get destinations() {
-    return this.#destinationModel.destinations;
-  }
-
   init() {
     const prevHeaderComponent = this.#headerComponent;
 
     this.#headerComponent = new HeaderView({
-      events: this.#eventModel,
-      destinations: this.#destinationModel,
+      events: this.#eventModel.events,
+      destinations: this.#destinationModel.destinations,
     });
 
     if (prevHeaderComponent === null) {

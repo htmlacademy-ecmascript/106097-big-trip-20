@@ -269,7 +269,7 @@ export default class FormEditView extends AbstractStatefulView {
         this.element.querySelector('input[name="event-start-time"]'),
         {
           dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.end,
+          defaultDate: this._state.start,
           onChange: this.#startDateChangeHandler,
           enableTime: true,
           maxDate: this._state.end,
