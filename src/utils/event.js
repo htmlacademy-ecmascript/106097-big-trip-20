@@ -7,4 +7,6 @@ const sortByTime = (eventA, eventB) => {
   return eventAduration - eventBduration;
 };
 
-export { sortByPrice, sortByTime };
+const getAllDestinationsNames = (destinations) => destinations.map((element) => element.name);
+
+export { sortByPrice, sortByTime, getAllDestinationsNames };
