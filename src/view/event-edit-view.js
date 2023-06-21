@@ -64,9 +64,7 @@ function createDestinationPicturesTemaplate(pictures) {
 function createFormEditTemplate (event, allOffers, destinations, editingType) {
   const {type, destinationId, offers, cost, start, end, isDisabled, isSaving} = event;
   const offersTemplate = createOffers(allOffers.getByType(type), offers);
-
   let destinationName = '';
-  console.log(destinationId);
   if (destinationId !== '') {
     destinationName = destinations.getById(destinationId).name;
   }
@@ -325,7 +323,7 @@ export default class FormEditView extends AbstractStatefulView {
     if (evt.target.checked) {
       if (offers.find((offer) => offer === evt.target.dataset.id) === undefined) {
         this._setState({
-          offers: [...offers, parseInt(evt.target.dataset.id, 10)]
+          offers: [...offers, evt.target.dataset.id]
         });
       }
     } else {
