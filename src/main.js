@@ -33,11 +33,11 @@ const filterPresenter = new FilterPresenter({
   eventsModel: eventModel
 });
 
-// const headerPresenter = new HeaderPresenter({
-//   headerContainer: tripMainElement,
-//   eventModel: eventModel,
-//   destinationModel: destinationModel,
-// });
+const headerPresenter = new HeaderPresenter({
+  headerContainer: tripMainElement,
+  eventModel: eventModel,
+  destinationModel: destinationModel,
+});
 
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventsElement,
@@ -66,7 +66,7 @@ async function init() {
   await offerModel.init();
   await eventModel.init()
     .finally(() => render(newEventButtonComponent, tripMainElement));
-  // headerPresenter.init();
+  headerPresenter.init();
 }
 init();
 filterPresenter.init();

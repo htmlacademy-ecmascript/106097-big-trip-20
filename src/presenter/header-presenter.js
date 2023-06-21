@@ -11,6 +11,8 @@ export default class HeaderPresenter {
     this.#headerContainer = headerContainer;
     this.#eventModel = eventModel;
     this.#destinationModel = destinationModel;
+
+    this.#eventModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
@@ -23,9 +25,14 @@ export default class HeaderPresenter {
 
     if (prevHeaderComponent === null) {
       render(this.#headerComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
+      return;
     }
 
     replace(this.#headerComponent, prevHeaderComponent);
     remove(prevHeaderComponent);
   }
+
+  #handleModelEvent = () => {
+    this.init();
+  };
 }
