@@ -328,7 +328,7 @@ export default class FormEditView extends AbstractStatefulView {
         });
       }
     } else {
-      const offersLeft = offers.filter((offer) => offer !== parseInt(evt.target.dataset.id, 10));
+      const offersLeft = offers.filter((offer) => offer !== evt.target.dataset.id);
       this._setState({
         offers: offersLeft,
       });
