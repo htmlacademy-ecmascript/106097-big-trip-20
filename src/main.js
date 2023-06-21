@@ -9,7 +9,7 @@ import { render } from './framework/render';
 import EventApiService from './events-api-service';
 import HeaderPresenter from './presenter/header-presenter';
 
-const AUTHORIZATION = 'Basic yW2wrW44xdo1wq2J0';
+const AUTHORIZATION = 'Basic yW2wrW44xdo1wq2J01';
 const END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
 
 const eventModel = new EventModel({
@@ -33,11 +33,11 @@ const filterPresenter = new FilterPresenter({
   eventsModel: eventModel
 });
 
-// const headerPresenter = new HeaderPresenter({
-//   headerContainer: tripMainElement,
-//   eventModel: eventModel,
-//   destinationModel: destinationModel,
-// });
+const headerPresenter = new HeaderPresenter({
+  headerContainer: tripMainElement,
+  eventModel: eventModel,
+  destinationModel: destinationModel,
+});
 
 const boardPresenter = new BoardPresenter({
   boardContainer: tripEventsElement,
@@ -61,10 +61,13 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-destinationModel.init();
-offerModel.init();
-eventModel.init()
-  .finally(() => render(newEventButtonComponent, tripMainElement));
-// headerPresenter.init();
+async function init() {
+  await destinationModel.init();
+  await offerModel.init();
+  await eventModel.init()
+    .finally(() => render(newEventButtonComponent, tripMainElement));
+  headerPresenter.init();
+}
+init();
 filterPresenter.init();
 boardPresenter.init();
