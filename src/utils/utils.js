@@ -1,8 +1,11 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 const DATE_FORMAT_FOR_TAG = 'YYYY-MM-DD';
 const DATE_FORMAT_FOR_HUMAN = 'MMM D';
 const TIME_FORMAT = 'hh:mm';
+const DATE_FORMAT_FOR_EDIT = 'DD/MM/YY HH:mm';
 
 const formatDataForTag = (date) => date ? dayjs(date).format(DATE_FORMAT_FOR_TAG) : '';
 const formatDataForHuman = (date) => date ? dayjs(date).format(DATE_FORMAT_FOR_HUMAN) : '';
@@ -25,6 +28,8 @@ const getDuration = (start, end) => {
   return `${minutes}M`;
 };
 
+const parseDateFromEditFormat = (dateString) => dayjs.utc(dateString, DATE_FORMAT_FOR_EDIT).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-export {formatDataForTag, formatDataForHuman, formatTime, getDuration, capitalizeFirstLetter};
+export {formatDataForTag, formatDataForHuman, formatTime, getDuration, capitalizeFirstLetter, parseDateFromEditFormat};

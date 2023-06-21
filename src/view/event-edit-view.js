@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { getAllDestinationsNames } from '../utils/event.js';
+import { parseDateFromEditFormat } from '../utils/utils.js';
 
 const EMPTY_POINT = {
   type: 'taxi',
@@ -240,14 +241,14 @@ export default class FormEditView extends AbstractStatefulView {
 
   #endDateChangeHandler = ([userDate]) => {
     this.updateElement({
-      end: userDate,
+      end: parseDateFromEditFormat(userDate),
     });
     this.#startDatepicker.set('maxDate', this._state.end);
   };
 
   #startDateChangeHandler = ([userDate]) => {
     this.updateElement({
-      start: userDate,
+      start: parseDateFromEditFormat(userDate),
     });
     this.#endDatepicker.set('minDate', this._state.start);
   };
