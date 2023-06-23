@@ -10,12 +10,12 @@ import NewEventPresenter from './new-event-presenter';
 import LoadingView from '../view/loading-view';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
-const listTemplate = '<ul class="trip-events__list"></ul>';
-
 const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
+
+const listTemplate = '<ul class="trip-events__list"></ul>';
 
 export default class BoardPresenter {
   #boardContainer = null;

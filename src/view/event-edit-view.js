@@ -114,7 +114,7 @@ function createFormEditTemplate (event, allOffers, destinations, editingType) {
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
-      <button class="event__reset-btn" type="reset"  ${isDisabled ? 'disabled' : ''}>${editingType === EditType.EDITING ? 'Delete' : 'Cancel'}</button>
+      <button class="event__reset-btn event__reset-btn-${editingType === EditType.EDITING ? 'delete' : 'cancel'}" type="reset"  ${isDisabled ? 'disabled' : ''}>${editingType === EditType.EDITING ? 'Delete' : 'Cancel'}</button>
       ${editingType === EditType.EDITING ? `<button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>` : ''}
@@ -179,20 +179,22 @@ export default class FormEditView extends AbstractStatefulView {
     this.updateElement(FormEditView.parseEventToState(event));
   }
 
-  _restoreHandlers(type) {
+  _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
-    if (type === EditType.EDITING) {
+    if (this.element.querySelector('.event__rollup-btn')) {
       this.element.querySelector('.event__rollup-btn')
         .addEventListener('click', this.#closeClickHandler);
+    }
 
-      this.element.querySelector('.event__reset-btn')
+    if (this.element.querySelector('.event__reset-btn-delete')) {
+      this.element.querySelector('.event__reset-btn-delete')
         .addEventListener('click', this.#eventDeleteClickHandler);
     }
 
-    if (type === EditType.CREATING) {
-      this.element.querySelector('.event__reset-btn')
+    if (this.element.querySelector('.event__reset-btn-cancel')) {
+      this.element.querySelector('.event__reset-btn-cancel')
         .addEventListener('click', this.#eventCancelClickHandler);
     }
 
@@ -204,9 +206,6 @@ export default class FormEditView extends AbstractStatefulView {
 
     this.element.querySelectorAll('.event__offer-checkbox')
       .forEach((element) => element.addEventListener('change', this.#eventOfferChangeHandler));
-
-    this.element.querySelector('input[name="event-end-time"]')
-      .addEventListener('change', this.#endDateChangeHandler);
 
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
@@ -240,55 +239,51 @@ export default class FormEditView extends AbstractStatefulView {
   }
 
   #endDateChangeHandler = ([userDate]) => {
-    this.updateElement({
+    this._setState({
       end: parseDateFromEditFormat(userDate),
     });
     this.#startDatepicker.set('maxDate', this._state.end);
   };
 
   #startDateChangeHandler = ([userDate]) => {
-    this.updateElement({
+    this._setState({
       start: parseDateFromEditFormat(userDate),
     });
     this.#endDatepicker.set('minDate', this._state.start);
   };
 
   #setEndDatePicker() {
-    if (this._state.end) {
-      this.#endDatepicker = flatpickr(
-        this.element.querySelector('input[name="event-end-time"]'),
-        {
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.end,
-          onChange: this.#endDateChangeHandler,
-          enableTime: true,
-          minDate: this._state.start,
-          locale: {
-            firstDayOfWeek: 1,
-          },
-          'time_24hr': true,
+    this.#endDatepicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.end,
+        onChange: this.#endDateChangeHandler,
+        enableTime: true,
+        minDate: this._state.start,
+        locale: {
+          firstDayOfWeek: 1,
         },
-      );
-    }
+        'time_24hr': true,
+      },
+    );
   }
 
   #setStartDatePicker() {
-    if (this._state.start) {
-      this.#startDatepicker = flatpickr(
-        this.element.querySelector('input[name="event-start-time"]'),
-        {
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.start,
-          onChange: this.#startDateChangeHandler,
-          enableTime: true,
-          maxDate: this._state.end,
-          locale: {
-            firstDayOfWeek: 1,
-          },
-          'time_24hr': true,
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.start,
+        onChange: this.#startDateChangeHandler,
+        enableTime: true,
+        maxDate: this._state.end,
+        locale: {
+          firstDayOfWeek: 1,
         },
-      );
-    }
+        'time_24hr': true,
+      },
+    );
   }
 
   #formSubmitHandler = (evt) => {
@@ -328,7 +323,7 @@ export default class FormEditView extends AbstractStatefulView {
         });
       }
     } else {
-      const offersLeft = offers.filter((offer) => offer !== parseInt(evt.target.dataset.id, 10));
+      const offersLeft = offers.filter((offer) => offer !== evt.target.dataset.id);
       this._setState({
         offers: offersLeft,
       });
