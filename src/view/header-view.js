@@ -10,8 +10,9 @@ function getTripRoute(destinations) {
     for (let i = 0; i < destinations.length; i++) {
       if (i === destinations.length - 1) {
         template += destinations[i];
+      } else {
+        template += `${destinations[i]} &mdash; `;
       }
-      template += `${destinations[i]} &mdash; `;
     }
     return template;
   }
@@ -25,7 +26,11 @@ function getTripDuration(events) {
   events = events.sort(sortByTime);
   const firstEventDateStart = formatDataForHuman(events[0].start);
   const lastEventDateEnd = formatDataForHuman(events.at(-1).end);
-  return `${firstEventDateStart}&nbsp;&mdash;&nbsp;${lastEventDateEnd}`;
+  if (firstEventDateStart === lastEventDateEnd) {
+    return firstEventDateStart;
+  } else {
+    return `${firstEventDateStart}&nbsp;&mdash;&nbsp;${lastEventDateEnd}`;
+  }
 }
 
 function calculateTripPrice(events) {
@@ -37,6 +42,10 @@ function calculateTripPrice(events) {
 }
 
 function createHeaderTemplate(events, allDestinations) {
+  if (events.length === 0) {
+    return '<section class="trip-main__trip-info  trip-info"></section>';
+  }
+
   const eventsDestinationsIds = events.map((event) => event.destinationId);
   const eventsDestinations = eventsDestinationsIds.map((destinationId) => allDestinations.find((destination) => destination.id === destinationId));
   const eventsDestinationsNames = eventsDestinations.map((destination) => destination.name);
