@@ -205,9 +205,6 @@ export default class FormEditView extends AbstractStatefulView {
     this.element.querySelectorAll('.event__offer-checkbox')
       .forEach((element) => element.addEventListener('change', this.#eventOfferChangeHandler));
 
-    this.element.querySelector('input[name="event-end-time"]')
-      .addEventListener('change', this.#endDateChangeHandler);
-
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
 
@@ -240,55 +237,51 @@ export default class FormEditView extends AbstractStatefulView {
   }
 
   #endDateChangeHandler = ([userDate]) => {
-    this.updateElement({
+    this._setState({
       end: parseDateFromEditFormat(userDate),
     });
     this.#startDatepicker.set('maxDate', this._state.end);
   };
 
   #startDateChangeHandler = ([userDate]) => {
-    this.updateElement({
+    this._setState({
       start: parseDateFromEditFormat(userDate),
     });
     this.#endDatepicker.set('minDate', this._state.start);
   };
 
   #setEndDatePicker() {
-    if (this._state.end) {
-      this.#endDatepicker = flatpickr(
-        this.element.querySelector('input[name="event-end-time"]'),
-        {
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.end,
-          onChange: this.#endDateChangeHandler,
-          enableTime: true,
-          minDate: this._state.start,
-          locale: {
-            firstDayOfWeek: 1,
-          },
-          'time_24hr': true,
+    this.#endDatepicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.end,
+        onChange: this.#endDateChangeHandler,
+        enableTime: true,
+        minDate: this._state.start,
+        locale: {
+          firstDayOfWeek: 1,
         },
-      );
-    }
+        'time_24hr': true,
+      },
+    );
   }
 
   #setStartDatePicker() {
-    if (this._state.start) {
-      this.#startDatepicker = flatpickr(
-        this.element.querySelector('input[name="event-start-time"]'),
-        {
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.start,
-          onChange: this.#startDateChangeHandler,
-          enableTime: true,
-          maxDate: this._state.end,
-          locale: {
-            firstDayOfWeek: 1,
-          },
-          'time_24hr': true,
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.start,
+        onChange: this.#startDateChangeHandler,
+        enableTime: true,
+        maxDate: this._state.end,
+        locale: {
+          firstDayOfWeek: 1,
         },
-      );
-    }
+        'time_24hr': true,
+      },
+    );
   }
 
   #formSubmitHandler = (evt) => {
