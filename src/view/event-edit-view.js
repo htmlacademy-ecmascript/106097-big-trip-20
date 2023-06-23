@@ -114,7 +114,7 @@ function createFormEditTemplate (event, allOffers, destinations, editingType) {
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
-      <button class="event__reset-btn" type="reset"  ${isDisabled ? 'disabled' : ''}>${editingType === EditType.EDITING ? 'Delete' : 'Cancel'}</button>
+      <button class="event__reset-btn event__reset-btn-${editingType === EditType.EDITING ? 'delete' : 'cancel'}" type="reset"  ${isDisabled ? 'disabled' : ''}>${editingType === EditType.EDITING ? 'Delete' : 'Cancel'}</button>
       ${editingType === EditType.EDITING ? `<button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>` : ''}
@@ -179,20 +179,22 @@ export default class FormEditView extends AbstractStatefulView {
     this.updateElement(FormEditView.parseEventToState(event));
   }
 
-  _restoreHandlers(type) {
+  _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
-    if (type === EditType.EDITING) {
+    if (this.element.querySelector('.event__rollup-btn')) {
       this.element.querySelector('.event__rollup-btn')
         .addEventListener('click', this.#closeClickHandler);
+    }
 
-      this.element.querySelector('.event__reset-btn')
+    if (this.element.querySelector('.event__reset-btn-delete')) {
+      this.element.querySelector('.event__reset-btn-delete')
         .addEventListener('click', this.#eventDeleteClickHandler);
     }
 
-    if (type === EditType.CREATING) {
-      this.element.querySelector('.event__reset-btn')
+    if (this.element.querySelector('.event__reset-btn-cancel')) {
+      this.element.querySelector('.event__reset-btn-cancel')
         .addEventListener('click', this.#eventCancelClickHandler);
     }
 
