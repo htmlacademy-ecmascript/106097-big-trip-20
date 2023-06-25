@@ -38,7 +38,7 @@ export default class EventModel extends Observable {
       const events = await this.#eventsApiService.events;
       this.#events = events.map(this.#adaptToClient);
     } catch (err) {
-      this.#events = [];
+      throw new Error('Can\'t load events');
     }
 
     this._notify(UpdateType.INIT);
